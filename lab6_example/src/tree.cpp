@@ -110,8 +110,8 @@ void tree::get_temp_var(Node *t)
 	tree::temp_var_seq++;
 }
 
-Node* tree::NewRoot(int kind, int kind_kind, NodeAttr attr, int type,
-				   Node *child1, Node *child2, Node *child3, Node *child4)
+Node* tree::NewRoot(int lineno,int kind, int kind_kind, NodeAttr attr, int type,
+				   Node *child)
 {
 	Node *t = new Node;
 	
@@ -123,10 +123,7 @@ Node* tree::NewRoot(int kind, int kind_kind, NodeAttr attr, int type,
 		t->kind_kind = kind_kind;
 		t->attr = attr;
 		t->type = type;
-		t->children[0] = child1;
-		t->children[1] = child2;
-		t->children[2] = child3;
-		t->children[3] = child4;
+		t->children = child;
 		t->lineno = lineno;
 		t->seq = tree::node_seq++;
 		t->sibling = NULL;

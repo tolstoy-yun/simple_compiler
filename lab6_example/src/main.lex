@@ -75,7 +75,7 @@ RBRACE \}
 {INTEGER} {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Integer);
-    node->attr->vali = atoi(yytext);
+    node->attr.vali = atoi(yytext);
     yylval = node;
     return INTEGER;
 }
@@ -97,7 +97,7 @@ RBRACE \}
 {IDENTIFIER} {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_VAR,VAR_COMMON,attr,Notype);
-    node->attr->var_name=string(yytext)
+    node->attr.var_name=string(yytext)
 
     /*node->firstScope=scope; //初始域号=当前域号
     /*遍历栈，判断是否有大于其起始域且var_name相同的符号
@@ -130,7 +130,7 @@ RBRACE \}
     Node* node=new Node(lineno,NODE_VAR,VAR_QUOTE,attr,Notype);
     string str=string(yytext);
     str.erase(str.begin());
-    node->attr->var_name=str;
+    node->attr.var_name=str;
     yylval=node;
     return IDQuote;
 }

@@ -24,13 +24,6 @@ enum StmtType {
 }
 ;
 
-enum ExprType{
-    EXPR_TYPE,
-    EXPR_OP,
-    EXPR_CONST,
-    EXPR_ID
-}
-
 enum OperatorType
 {
     OP_EQ,  // ==
@@ -58,7 +51,6 @@ enum OperatorType
 enum
 {
 	VAR_DECL = 0,
-	VAR_IDQuote
 };
 
 enum
@@ -70,12 +62,27 @@ enum
 	String
 };
 
+enum ExprType{
+    EXPR_TYPE,
+    EXPR_OP,
+    EXPR_CONST,
+    EXPR_ID
+}
+
 enum VarType{
     VAR_COMMON, //一般的变量
     VAR_QUOTE, //引用
     VAR_POINTER //指针
 }
 ;
+
+enum TypeType{
+	TYPE_INT,
+	TYPE_CHAR,
+	TYPE_BOOL,
+	FUNC_VOID,
+	TYPE_STRING
+}
 
 #define MAX_CHILDREN 4
 
@@ -90,7 +97,7 @@ struct NodeAttr {
 	int symtbl_seq;
 	
 	NodeAttr(void) {;}
-	NodeAttr(int i)	{ op = i; }
+	NodeAttr(OperatorType i)	{ op = i; }
 	NodeAttr(char c) { valc = c; }
 	NodeAttr(string s) {vals = s; }
 };

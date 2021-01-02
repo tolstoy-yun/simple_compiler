@@ -1,12 +1,12 @@
 %{
     #include "common.h"
     #define YYSTYPE Node *  
-    TreeNode* root;
+    tree parser_tree=tree();
     extern int lineno;
     extern ofstream fout;
-    extern int scope; //记录当前所处的作用域域的标号
-    extern int symbolNum; //记录当前记录到第几个符号
-    extern stack<Node*> currentScope; //栈中记录当前作用域的变量
+    // extern int scope; //记录当前所处的作用域域的标号
+    // extern int symbolNum; //记录当前记录到第几个符号
+    // extern stack<Node*> currentScope; //栈中记录当前作用域的变量
     int yylex();
     int yyerror( char const * );
 %}
@@ -42,7 +42,10 @@
 %%
 
 program
-: statements {root = new TreeNode(0, NODE_PROG); root->addChild($1);};
+: statements {
+    NodeAttr attr=NodeAttr();
+    tree.root =tree.NewRoot(0, NODE_PROG,-1,attr,Notype,$1); 
+};
 
 statements
 :  statement {$$=$1;}
@@ -50,7 +53,7 @@ statements
 ;
 
 statement
-: SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
+: SEMICOLON  {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_STMT,STMT_SKIP,attr,Notype); node->seq=tree::node_seq++;}
 | declaration SEMICOLON {$$ = $1;}
 | LBRACE statements RBRACE {$$=$2;}
 | if_stmt {$$=$1;}
@@ -64,36 +67,38 @@ statement
 
 declaration
 : T IDLIST {
-    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
-    node->stype = STMT_DECL;
-    //$2的类型是var，将$2压入currentScope栈，并分配一个符号（=symbolNum）
-    if($2->nodeType==NODE_VAR){
-        $2->number=symbolNum;
-        symbolNum++;
-        currentScope.push($2);
-        //将$2的兄弟结点也压入栈并分配符号
-        TreeNode* temp=$2->sibling;
-        while(temp){
-            temp->number=symbolNum;
-            currentScope.push(temp);
-            symbolNum++;
-            temp=temp->sibling;
-        }
-    }
-    /*$2的类型是expr，对应T IDENTIFIER=n,……;的情况
-    * 遍历$2及其兄弟结点，将它们的第一个孩子结点压栈并分配符号
-    */
-    else{
-        TreeNode* t=nullptr;
-        t=$2;
-        while(t){
-            TreeNode* cur=t->child;
-            cur->number=symbolNum;
-            symbolNum++;
-            currentScope.push(cur);
-            t=t->sibling;
-        }
-    }
+    NodeAttr attr=NodeAttr();
+    Node* node = new Node($1->lineno, NODE_STMT,STMT_DECL,attr,Notype);
+    node->seq=tree::node_seq++;
+
+    // //$2的类型是var，将$2压入currentScope栈，并分配一个符号（=symbolNum）
+    // if($2->nodeType==NODE_VAR){
+    //     $2->number=symbolNum;
+    //     symbolNum++;
+    //     currentScope.push($2);
+    //     //将$2的兄弟结点也压入栈并分配符号
+    //     TreeNode* temp=$2->sibling;
+    //     while(temp){
+    //         temp->number=symbolNum;
+    //         currentScope.push(temp);
+    //         symbolNum++;
+    //         temp=temp->sibling;
+    //     }
+    // }
+    // /*$2的类型是expr，对应T IDENTIFIER=n,……;的情况
+    // * 遍历$2及其兄弟结点，将它们的第一个孩子结点压栈并分配符号
+    // */
+    // else{
+    //     TreeNode* t=nullptr;
+    //     t=$2;
+    //     while(t){
+    //         TreeNode* cur=t->child;
+    //         cur->number=symbolNum;
+    //         symbolNum++;
+    //         currentScope.push(cur);
+    //         t=t->sibling;
+    //     }
+    // }
     node->addChild($1);
     node->addChild($2);
     $$ = node;
@@ -101,11 +106,15 @@ declaration
 ;
 
 func: T IDENTIFIER LPAREN specialID RPAREN statement{
-    TreeNode* node=new TreeNode($2->lineno,NODE_FUNC);
-    //变量遇到T开头的定义，压入currentScope栈，并分配一个符号（=symbolNum）
-    $2->number=symbolNum;
-    symbolNum++;
-    currentScope.push($2);
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($2->lineno,NODE_FUNC,-1,attr,Notype);
+    node->seq=tree::node_seq++;
+
+    // //变量遇到T开头的定义，压入currentScope栈，并分配一个符号（=symbolNum）
+    // $2->number=symbolNum;
+    // symbolNum++;
+    // currentScope.push($2);
+
     node->addChild($1);
     node->addChild($2);
     node->addChild($4);
@@ -113,11 +122,13 @@ func: T IDENTIFIER LPAREN specialID RPAREN statement{
     $$=node;
 }
 | T IDENTIFIER LPAREN RPAREN statement{
-    TreeNode* node=new TreeNode($2->lineno,NODE_FUNC);
-    //变量遇到T开头的定义，压入currentScope栈，并分配一个符号（=symbolNum）
-    $2->number=symbolNum;
-    symbolNum++;
-    currentScope.push($2);
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($2->lineno,NODE_FUNC,-1,attr,Notype);
+    node->seq=tree::node_seq++;
+    // //变量遇到T开头的定义，压入currentScope栈，并分配一个符号（=symbolNum）
+    // $2->number=symbolNum;
+    // symbolNum++;
+    // currentScope.push($2);
     node->addChild($1);
     node->addChild($2);
     node->addChild($5);
@@ -125,11 +136,11 @@ func: T IDENTIFIER LPAREN specialID RPAREN statement{
 }
 ;
 
-T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;} 
-| T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
-| T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
-| T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = FUNC_VOID;}
-| T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;}
+T: T_INT {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_INT,attr,Notype); node->seq=tree::node_seq++;}
+| T_CHAR {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_CHAR,attr,Notype); node->seq=tree::node_seq++;}
+| T_BOOL {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_BOOL,attr,Notype); node->seq=tree::node_seq++;}
+| T_VOID {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,FUNC_VOID,attr,Notype); node->seq=tree::node_seq++;}
+| T_STRING {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_STRING,attr,Notype); node->seq=tree::node_seq++;}
 ;
 
 IDLIST: IDLIST COMMA expr {$$=$1; $$->addSibling($3);}
@@ -137,8 +148,9 @@ IDLIST: IDLIST COMMA expr {$$=$1; $$->addSibling($3);}
 ;
 
 for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statement {
-    TreeNode* node=new TreeNode($1->lineno,NODE_STMT);
-    node->stype=STMT_FOR;
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($1->lineno,NODE_STMT,STMT_FOR,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($3);
     node->addChild($5);
     node->addChild($7);
@@ -146,8 +158,9 @@ for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statement {
     $$=node;
 }
 | S_FOR LPAREN declaration SEMICOLON expr SEMICOLON expr RPAREN statement {
-    TreeNode* node=new TreeNode($1->lineno,NODE_STMT);
-    node->stype=STMT_FOR;
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($1->lineno,NODE_STMT,STMT_FOR,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($3);
     node->addChild($5);
     node->addChild($7);
@@ -157,8 +170,9 @@ for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statement {
 ;
 
 while_stmt: S_WHILE LPAREN expr RPAREN statement {
-    TreeNode* node=new TreeNode($1->lineno,NODE_STMT);
-    node->stype=STMT_WHILE;
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($1->lineno,NODE_STMT,STMT_WHILE,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($3);
     node->addChild($5);
     $$=node;
@@ -166,15 +180,17 @@ while_stmt: S_WHILE LPAREN expr RPAREN statement {
 ;
 
 if_stmt: S_IF LPAREN expr RPAREN statement %prec LOWER_THAN_ELSE{
-    TreeNode* node=new TreeNode($3->lineno,NODE_STMT);
-    node->stype=STMT_IF_ELSE;
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($3->lineno,NODE_STMT,STMT_IF_ELSE,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($3);
     node->addChild($5);
     $$=node;
 }
 | S_IF LPAREN expr RPAREN statement S_ELSE statement{
-    TreeNode* node=new TreeNode($3->lineno,NODE_STMT);
-    node->stype=STMT_IF_ELSE;
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($3->lineno,NODE_STMT,STMT_IF_ELSE,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($3);
     node->addChild($5);
     node->addChild($7);
@@ -183,14 +199,16 @@ if_stmt: S_IF LPAREN expr RPAREN statement %prec LOWER_THAN_ELSE{
 
 
 printf: P_PRINTF LPAREN STRING RPAREN {
-    TreeNode* node=new TreeNode($1->lineno,NODE_STMT);
-    node->stype=STMT_PRINTF;
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($1->lineno,NODE_STMT,STMT_PRINTF,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($3);
     $$=node;
 }
 | P_PRINTF LPAREN STRING COMMA specialID RPAREN {
-    TreeNode* node=new TreeNode($1->lineno,NODE_STMT);
-    node->stype=STMT_PRINTF;
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($1->lineno,NODE_STMT,STMT_PRINTF,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($3);
     node->addChild($5);
     $$=node;
@@ -198,8 +216,9 @@ printf: P_PRINTF LPAREN STRING RPAREN {
 ;
 
 scanf: P_SCANF LPAREN STRING COMMA specialID RPAREN{
-    TreeNode* node=new TreeNode($1->lineno,NODE_STMT);
-    node->stype=STMT_SCANF;
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node($1->lineno,NODE_STMT,STMT_SCANF,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($3);
     node->addChild($5);
     $$=node;
@@ -228,151 +247,172 @@ expr
     $$ = $1;
 }
 | expr LOP_PLUS_ASSIGN expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_PLUS_ASSIGN;
+    NodeAttr attr=NodeAttr(OP_PLUS_ASSIGN);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_MINUS_ASSIGN expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_MINUS_ASSIGN;
+    NodeAttr attr=NodeAttr(OP_MINUS_ASSIGN);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_ASSIGN expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_ASSIGN;
+    NodeAttr attr=NodeAttr(OP_ASSIGN);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_PLUS expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_PLUS;
+    NodeAttr attr=NodeAttr(OP_PLUS);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_MINUS expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_MINUS;
+    NodeAttr attr=NodeAttr(OP_MINUS);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_MUL expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_MUL;
+    NodeAttr attr=NodeAttr(OP_MUL);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_DIV expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_DIV;
+    NodeAttr attr=NodeAttr(OP_DIV);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_MOD expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_MOD;
+    NodeAttr attr=NodeAttr(OP_MOD);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_INC{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_INC;
+    NodeAttr attr=NodeAttr(OP_INC);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     $$=node;
 }
 | expr LOP_DEC{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_DEC;
+    NodeAttr attr=NodeAttr(OP_DEC);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     $$=node;
 }
 | expr LOP_AND expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_AND;
+    NodeAttr attr=NodeAttr(OP_AND);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_OR expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_OR;
+    NodeAttr attr=NodeAttr(OP_OR);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | LOP_OPPSITE expr{
-    TreeNode* node=new TreeNode($2->lineno,NODE_EXPR);
-    node->optype=OP_OPPSITE;
+    NodeAttr attr=NodeAttr(OP_OPPSITE);
+    Node* node=new Node($2->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($2);
     $$=node;
 }
 | expr LOP_LE expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_LE;
+    NodeAttr attr=NodeAttr(OP_LE);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_GE expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_GE;
+    NodeAttr attr=NodeAttr(OP_GE);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_NZ expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_NZ;
+    NodeAttr attr=NodeAttr(OP_NZ);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_GT expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_GT;
+    NodeAttr attr=NodeAttr(OP_GT);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_LT expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_LT;
+    NodeAttr attr=NodeAttr(OP_LT);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | expr LOP_EQ expr{
-    TreeNode* node=new TreeNode($1->lineno,NODE_EXPR);
-    node->optype=OP_EQ;
+    NodeAttr attr=NodeAttr(OP_EQ);
+    Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($1);
     node->addChild($3);
     $$=node;
 }
 | LOP_IAND expr{
-    TreeNode* node=new TreeNode($2->lineno,NODE_EXPR);
-    node->optype=OP_IAND;
+    NodeAttr attr=NodeAttr(OP_IAND);
+    Node* node=new Node($2->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($2);
     $$=node;
 }
 | LPAREN expr RPAREN{$$=$1;}
 | LOP_MINUS expr{
-    TreeNode* node=new TreeNode($2->lineno,NODE_EXPR);
-    node->optype=OP_MINUS;
+    NodeAttr attr=NodeAttr(OP_MINUS);
+    Node* node=new Node($2->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($2);
     $$=node;
 }
 | LOP_PLUS expr{
-    TreeNode* node=new TreeNode($2->lineno,NODE_EXPR);
-    node->optype=OP_PLUS;
+    NodeAttr attr=NodeAttr(OP_PLUS);
+    Node* node=new Node($2->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
+    node->seq=tree::node_seq++;
     node->addChild($2);
     $$=node;
 }
