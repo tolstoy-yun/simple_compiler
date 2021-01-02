@@ -2,7 +2,7 @@
 #include <fstream>
 #include<stack>
 
-extern TreeNode *root;
+extern parse_tree;
 extern FILE *yyin;
 extern int yyparse();
 ofstream fout("result.txt",ios::app);
@@ -13,22 +13,10 @@ stack<TreeNode*> currentScope; //栈中记录当前作用域的变量
 using namespace std;
 int main(int argc, char *argv[])
 {
-    if (argc == 2)
-    {
-        FILE *fin = fopen(argv[1], "r");
-        if (fin != nullptr)
-        {
-            yyin = fin;
-        }
-        else
-        {
-            cerr << "failed to open file: " << argv[1] << endl;
-        }
-    }
+    yyin = fopen(argv[1], "r");
+    ostream* asm_out = new ofstream(argv[2]);
     yyparse();
-    if(root != NULL) {
-        root->genNodeId();
-        root->printAST();
-    }
+    parse_tree.get_label();
+    parse_tree.gen_code(*asm_out);
     return 0;
 }

@@ -3,6 +3,7 @@
 #include "common.h"
 #include "main.tab.h"  // yacc header
 #include<string.h>
+extern symbol_table symtbl;
 int lineno=1;
 /*
 * extern int scope; //记录当前所处的作用域域的标号
@@ -42,6 +43,7 @@ RBRACE \}
 "if" return S_IF;
 "while" return S_WHILE;
 "else" return S_ELSE;
+"return" retuen S_RETURN;
 
 "printf" return P_PRINTF;
 "scanf" return P_SCANF;
@@ -65,7 +67,6 @@ RBRACE \}
 ">" return LOP_GT;
 "<" return LOP_LT;
 "==" return LOP_EQ;
-"&" return LOP_IAND;
 
 "," return COMMA;
 ";" return SEMICOLON;
@@ -76,6 +77,7 @@ RBRACE \}
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Integer);
     node->attr.vali = atoi(yytext);
+    node->seq=tree::node_seq++;
     yylval = node;
     return INTEGER;
 }
@@ -83,6 +85,7 @@ RBRACE \}
 {CHAR} {
     NodeAttr attr=NodeAttr(yytext[1]);
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Char);
+    node->seq=tree::node_seq++;
     yylval = node;
     return CHAR;
 }
@@ -90,6 +93,7 @@ RBRACE \}
 {STRING} {
     NodeAttr attr=NodeAttr(yytext[1]);
     Node* node = new Node(lineno,NODE_CONST,-1,attr,String);
+    node->seq=tree::node_seq++;
     yylval=node;
     return STRING;
 }
@@ -98,6 +102,8 @@ RBRACE \}
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_VAR,VAR_COMMON,attr,Notype);
     node->attr.var_name=string(yytext)
+    node->seq=tree::node_seq++;
+    node->pos=symtbl.insert(node->attr.var_name,VAR_CONST);
 
     /*node->firstScope=scope; //初始域号=当前域号
     /*遍历栈，判断是否有大于其起始域且var_name相同的符号
@@ -131,6 +137,8 @@ RBRACE \}
     string str=string(yytext);
     str.erase(str.begin());
     node->attr.var_name=str;
+    node->seq=tree::node_seq++;
+    symtbl.insert(node->attr.var_name,VAR_QUOTE);
     yylval=node;
     return IDQuote;
 }

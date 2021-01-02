@@ -16,11 +16,11 @@ enum StmtType {
     STMT_SKIP,
     STMT_DECL,
     STMT_FOR,
-    STMT_ASSIGN,
     STMT_WHILE,
     STMT_IF_ELSE,
     STMT_PRINTF,
-    STMT_SCANF
+    STMT_SCANF,
+	STMT_RETURN
 }
 ;
 
@@ -46,7 +46,8 @@ enum OperatorType
     OP_MINUS_ASSIGN, // -=
     OP_INC,    // ++
     OP_DEC    // --
-};
+}
+;
 
 enum
 {
@@ -60,14 +61,13 @@ enum
 	Boolean,
 	Char,
 	String
-};
+}
+;
 
 enum ExprType{
-    EXPR_TYPE,
-    EXPR_OP,
-    EXPR_CONST,
-    EXPR_ID
+    EXPR_OP
 }
+;
 
 enum VarType{
     VAR_COMMON, //一般的变量
@@ -83,6 +83,7 @@ enum TypeType{
 	FUNC_VOID,
 	TYPE_STRING
 }
+;
 
 #define MAX_CHILDREN 4
 
@@ -112,15 +113,15 @@ struct Label {
 struct Node
 {
 public:
-	struct Node *children;
-	struct Node *sibling;
+	struct Node *children=nullptr;
+	struct Node *sibling=nullptr;
 	int lineno;
-	int nodeID;
 	NodeType kind;//节点类型
 	int kind_kind;//节点更具体的类型
 	NodeAttr attr;
 	int type;//int,char,boolean
-	int seq;
+	int seq;//序号
+	int pos=-1;//变量在符号表中的位置
 	int temp_var;//临时变量
 	Label label;
 

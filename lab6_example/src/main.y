@@ -1,9 +1,9 @@
 %{
     #include "common.h"
     #define YYSTYPE Node *  
-    tree parser_tree=tree();
     extern int lineno;
     extern ofstream fout;
+    extern symbol_table symtbl;
     // extern int scope; //记录当前所处的作用域域的标号
     // extern int symbolNum; //记录当前记录到第几个符号
     // extern stack<Node*> currentScope; //栈中记录当前作用域的变量
@@ -44,7 +44,7 @@
 program
 : statements {
     NodeAttr attr=NodeAttr();
-    tree.root =tree.NewRoot(0, NODE_PROG,-1,attr,Notype,$1); 
+    paese_tree.root =paese_tree.NewRoot(0, NODE_PROG,-1,attr,Notype,$1); 
 };
 
 statements
@@ -63,42 +63,42 @@ statement
 | scanf SEMICOLON {$$=$1;}
 | expr SEMICOLON {$$=$1;}
 | func {$$=$1;}
+| return_stmt {$$ = $1;}
+;
+
+return_stmt
+: S_RETURN expr SEMICOLON{
+    NodeAttr attr=NodeAttr();
+    Node* node = new Node($2->lineno, NODE_STMT,STMT_RETURN,attr,$2->type);
+    node->addChild($2);
+    $$ = node;
+}
 ;
 
 declaration
 : T IDLIST {
     NodeAttr attr=NodeAttr();
-    Node* node = new Node($1->lineno, NODE_STMT,STMT_DECL,attr,Notype);
+    Node* node = new Node($1->lineno, NODE_STMT,STMT_DECL,attr,$1->type);
     node->seq=tree::node_seq++;
-
-    // //$2的类型是var，将$2压入currentScope栈，并分配一个符号（=symbolNum）
-    // if($2->nodeType==NODE_VAR){
-    //     $2->number=symbolNum;
-    //     symbolNum++;
-    //     currentScope.push($2);
-    //     //将$2的兄弟结点也压入栈并分配符号
-    //     TreeNode* temp=$2->sibling;
-    //     while(temp){
-    //         temp->number=symbolNum;
-    //         currentScope.push(temp);
-    //         symbolNum++;
-    //         temp=temp->sibling;
-    //     }
-    // }
-    // /*$2的类型是expr，对应T IDENTIFIER=n,……;的情况
-    // * 遍历$2及其兄弟结点，将它们的第一个孩子结点压栈并分配符号
-    // */
-    // else{
-    //     TreeNode* t=nullptr;
-    //     t=$2;
-    //     while(t){
-    //         TreeNode* cur=t->child;
-    //         cur->number=symbolNum;
-    //         symbolNum++;
-    //         currentScope.push(cur);
-    //         t=t->sibling;
-    //     }
-    // }
+    //如果$2的类型是var，将$2在符号表里的type设为与T一致
+    if($2->nodeType==NODE_VAR){
+        symtbl.set_type($2->pos,$1->type);
+         //将$2的兄弟结点也设置type
+         Node* temp=$2->sibling;
+         while(temp){
+             symtbl.set_type(temp->pos,$1->type);
+         }
+    }
+    //$2的类型是expr，对应T IDENTIFIER=n,……;的情况
+    else{
+        Node* t=nullptr;
+        t=$2;
+        while(t){
+            Node* cur=t->child;
+            symtbl.set_type(cur->pos,$1->type);
+            t=t->sibling;
+        }
+    }
     node->addChild($1);
     node->addChild($2);
     $$ = node;
@@ -109,6 +109,7 @@ func: T IDENTIFIER LPAREN specialID RPAREN statement{
     NodeAttr attr=NodeAttr();
     Node* node=new Node($2->lineno,NODE_FUNC,-1,attr,Notype);
     node->seq=tree::node_seq++;
+    symtbl.set_type($2->pos,$1->type);
 
     // //变量遇到T开头的定义，压入currentScope栈，并分配一个符号（=symbolNum）
     // $2->number=symbolNum;
@@ -125,6 +126,7 @@ func: T IDENTIFIER LPAREN specialID RPAREN statement{
     NodeAttr attr=NodeAttr();
     Node* node=new Node($2->lineno,NODE_FUNC,-1,attr,Notype);
     node->seq=tree::node_seq++;
+    symtbl.set_type($2->pos,$1->type);
     // //变量遇到T开头的定义，压入currentScope栈，并分配一个符号（=symbolNum）
     // $2->number=symbolNum;
     // symbolNum++;
@@ -136,11 +138,11 @@ func: T IDENTIFIER LPAREN specialID RPAREN statement{
 }
 ;
 
-T: T_INT {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_INT,attr,Notype); node->seq=tree::node_seq++;}
-| T_CHAR {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_CHAR,attr,Notype); node->seq=tree::node_seq++;}
-| T_BOOL {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_BOOL,attr,Notype); node->seq=tree::node_seq++;}
+T: T_INT {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_INT,attr,Integer); node->seq=tree::node_seq++;}
+| T_CHAR {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_CHAR,attr,Char); node->seq=tree::node_seq++;}
+| T_BOOL {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_BOOL,attr,Boolean); node->seq=tree::node_seq++;}
 | T_VOID {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,FUNC_VOID,attr,Notype); node->seq=tree::node_seq++;}
-| T_STRING {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_STRING,attr,Notype); node->seq=tree::node_seq++;}
+| T_STRING {NodeAttr attr=NodeAttr(); $$ = new Node(lineno, NODE_TYPE,TYPE_STRING,attr,String); node->seq=tree::node_seq++;}
 ;
 
 IDLIST: IDLIST COMMA expr {$$=$1; $$->addSibling($3);}
