@@ -9,18 +9,6 @@ typedef struct TAG_SYMBOL_ENTRY
 	int type;
 } symbol_entry;
 
-enum ValueType
-{
-    VALUE_BOOL,
-    VALUE_INT,
-    VALUE_CHAR,
-    VALUE_STRING,
-    COMPOSE_STRUCT,
-    COMPOSE_UNION,
-    COMPOSE_FUNCTION,
-    COMPOSE_VOID
-};
-
 class symbol_table
 {
 private:
@@ -28,8 +16,9 @@ private:
 	int size;
 
 public:
-	ValueType type;
+	int type;
 	ValueType* sibling;
+	int symbol_number;
 
 public:
 	int lookup(string name);

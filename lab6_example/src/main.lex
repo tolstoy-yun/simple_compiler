@@ -5,11 +5,10 @@
 #include<string.h>
 extern symbol_table symtbl;
 int lineno=1;
-/*
-* extern int scope; //记录当前所处的作用域域的标号
-* extern int symbolNum; //记录当前记录到第几个符号
-* extern stack<Node*> currentScope; //栈中记录当前作用域的变量
-*/
+extern parse_tree;
+extern int scope; //记录当前所处的作用域域的标号
+extern int symbolNum; //记录当前记录到第几个符号
+extern stack<Node*> currentScope; //栈中记录当前作用域的变量
 %}
 
 BLOCKCOMMENT \/\*([^\*^\/]*|[\*^\/*]*|[^\**\/]*)*\*\/
@@ -78,6 +77,7 @@ RBRACE \}
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Integer);
     node->attr.vali = atoi(yytext);
     node->seq=tree::node_seq++;
+    parse_tree.type_check(node);
     yylval = node;
     return INTEGER;
 }
@@ -86,6 +86,7 @@ RBRACE \}
     NodeAttr attr=NodeAttr(yytext[1]);
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Char);
     node->seq=tree::node_seq++;
+    parse_tree.type_check(node);
     yylval = node;
     return CHAR;
 }
@@ -94,6 +95,7 @@ RBRACE \}
     NodeAttr attr=NodeAttr(yytext[1]);
     Node* node = new Node(lineno,NODE_CONST,-1,attr,String);
     node->seq=tree::node_seq++;
+    parse_tree.type_check(node);
     yylval=node;
     return STRING;
 }
@@ -103,19 +105,21 @@ RBRACE \}
     Node* node = new Node(lineno, NODE_VAR,VAR_COMMON,attr,Notype);
     node->attr.var_name=string(yytext)
     node->seq=tree::node_seq++;
-    node->pos=symtbl.insert(node->attr.var_name,VAR_CONST);
-
-    /*node->firstScope=scope; //初始域号=当前域号
-    /*遍历栈，判断是否有大于其起始域且var_name相同的符号
+    node->firstScope=scope; //初始域号=当前域号
+    /*遍历栈，判断是否有小于其起始域且var_name相同的符号
     * 如果有，则当前结点的序号=那个结点的序号，退出遍历
     */
-    stack<TreeNode*> tempStack;//辅助遍历栈
-    TreeNode* tempNode=nullptr;
+    stack<Node*> tempStack;//辅助遍历栈
+    Node* tempNode=nullptr;
     while(!currentScope.empty()){
         tempNode=currentScope.top();
         currentScope.pop();
         tempStack.push(tempNode);
-        if(node->var_name.compare(tempNode->var_name)==0 && node->firstScope>=tempNode->firstScope){
+        if(node->var_name.compare(tempNode->attr.var_name)==0 && node->firstScope>=tempNode->firstScope){
+            if(node->firstScope==tempNode->firstScope){
+                //如果相同的作用域内存在相同的符号，则将当前符号的疑似重定义位置1
+                node->suspected_redefine=1;
+            }
             node->number=tempNode->number;
             break;
         }
@@ -125,22 +129,50 @@ RBRACE \}
         currentScope.push(tempStack.top());
         tempStack.pop();
     }
-    */
-
+    parse_tree.type_check(node);
     yylval = node;
     return IDENTIFIER;
 }
 
 {IDQuote} {
     NodeAttr attr=NodeAttr(string(yytext));
-    Node* node=new Node(lineno,NODE_VAR,VAR_QUOTE,attr,Notype);
     string str=string(yytext);
     str.erase(str.begin());
+    Node* node=new Node(lineno,NODE_VAR,VAR_QUOTE,attr,Notype);
     node->attr.var_name=str;
     node->seq=tree::node_seq++;
-    symtbl.insert(node->attr.var_name,VAR_QUOTE);
+    parse_tree.type_check(node);
+    //将&n的类型设为与n一致
+    int n_pos=symtbl.lookup(node->var_name);
+    node->type=symtbl.get_type(n_pos);
     yylval=node;
     return IDQuote;
+}
+
+{LBRACE} {
+    scope++;
+    return LBRACE;
+}
+
+{RBRACE} {
+    scope--;
+    //遍历栈，删除firstScope>scope的结点
+    stack<Node*> tempStack;//辅助遍历栈
+    Node* tempNode=nullptr;
+    while(!currentScope.empty()){
+        tempNode=currentScope.top();
+        currentScope.pop();
+        if(tempNode->firstScope>scope){
+            continue;
+        }
+        tempStack.push(tempNode);
+    }
+    //将tempStack里的结点重新倒回currentScope里
+    while(!tempStack.empty()){
+        currentScope.push(tempStack.top());
+        tempStack.pop();
+    }
+    return RBRACE;
 }
 
 {WHILTESPACE} /* do nothing */

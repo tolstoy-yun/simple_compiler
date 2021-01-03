@@ -60,7 +60,8 @@ enum
 	Integer,
 	Boolean,
 	Char,
-	String
+	String,
+	Function
 }
 ;
 
@@ -124,6 +125,9 @@ public:
 	int pos=-1;//变量在符号表中的位置
 	int temp_var;//临时变量
 	Label label;
+	int firstScope=-1; //当node类型为变量时，记录下它被定义时所处的作用域标号
+    int number=-1; //当node类型为变量时，其被分配的序号
+	int suspected_redefine=0;//疑似重定义符号标志位，为1时代表这个符号疑似重定义了
 
 	void output(void);
 

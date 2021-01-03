@@ -8,6 +8,9 @@ using namespace ::std;
 
 extern int lineno;
 extern symbol_table symtbl;
+extern int scope; //记录当前所处的作用域的标号
+extern int symbolNum; //记录当前记录到第几个符号
+extern stack<TreeNode*> currentScope; //栈中记录当前作用域的变量
 
 tree parse_tree;
 
@@ -66,44 +69,60 @@ void tree::type_check(Node *t)
 
 	switch (t->kind)
 	{	
-		//重定义还没写，要加作用域
+		//声明时重定义的类型检查在main.y里实现
 		case NODE_STMT:
 			switch(t->kind_kind){
 				case STMT_WHILE:
 					if (t->children->type != Boolean)
 					{
-						cerr << "Bad boolean type at line: " << t->lineno << endl;
+						cerr <<"[line " <<t->lineno<<"]：Bad boolean type." << endl;
+						exit(1);
 					}
-					return;
+					break;
 				case STMT_SKIP:
-					return;
+					break;
 				case STMT_DECL:
-					
-					return;
+					break;
 				case STMT_FOR:
 					//第二个孩子要是boolean类型的
 					if(t->children->sibling!= Boolean)
 					{
-						cerr << "Bad boolean type at line: " << t->lineno << endl;
+						cerr <<"[line " <<t->lineno<<"]：Bad boolean type." << endl;
+						exit(1);
 					}
-					return;
+					break;
 				case STMT_IF_ELSE:
 					if(t->children!=Boolean)
 					{
-						cerr << "Bad boolean type at line: " << t->lineno << endl;
+						cerr <<"[line " <<t->lineno<<"]：Bad boolean type." << endl;
+						exit(1);
 					}
-					return;
+					break;
 				case STMT_PRINTF:
-					return;
+					break;
 				case STMT_SCANF:
-					return;
+					break;
 				case STMT_RETURN:
-					return;
+					break;
 			}
 			break;
 		case NODE_CONST:
 			break;
 		case NODE_VAR:
+			switch(t->kind_kind){
+				case VAR_COMMON:
+					break;
+				case VAR_QUOTE:
+					//引用的符号必须存在
+					if(symtbl.lookup(t->attr.var_name)==-1){
+						cerr <<"[line " <<t->lineno<<"]：The referenced symbol does not exist." << endl;
+						exit(1);
+					}
+					break;
+				default:
+					cerr <<"[line " <<t->lineno<<"]：Bad type." << endl;
+					exit(1);
+			}
 			break;
 		case NODE_EXPR:
 			if(t->kind_kind==EXPR_OP)
@@ -113,48 +132,53 @@ void tree::type_check(Node *t)
 					//+=，两个操作数可以都为int，都为char，一个是int，一个是char
 					case LOP_PLUS_ASSIGN:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \"+=\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"+=\" type." << endl;
+							exit(1);
 						}
+						break;
 					//-=，两个操作数可以都为int，都为char，一个是int，一个是char
 					case LOP_MINUS_ASSIGN:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \"-=\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"-=\" type." << endl;
+							exit(1);
 						}
+						break;
 					//=，赋值，两个操作数可以都为int，都为char，一个是int，一个是char
 					case LOP_ASSIGN:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad ASSIGN type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad ASSIGN type." << endl;
+							exit(1);
 						}
+						break;
 					//+，加，两个操作数可以都为int，都为char，一个是int，一个是char
 					case LOP_PLUS:
 						//加运算
 						if(t->children->sibling!=nullptr){
 							if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-								return;
+								break;
 							}
 							else{
-								cerr << "Bad \"+\" type at line: " << t->lineno << endl;
-								return;
+								cerr <<"[line " <<t->lineno<<"]：Bad \"+\" type." << endl;
+								exit(1);
 							}
+							break;
 						}
 						//正数，+i
 						else{
 							if(t->children->type!=Integer){
-								cerr << "Bad \"+\" type at line: " << t->lineno << endl;
+								cerr <<"[line " <<t->lineno<<"]：Bad \"+\" type." << endl;
+								exit(1);
 							}
-							return;
+							break;
 						}
 						
 					//-，减，两个操作数可以都为int，都为char，一个是int，一个是char
@@ -162,129 +186,146 @@ void tree::type_check(Node *t)
 						//减运算
 						if(t->children->sibling!=nullptr){
 							if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-								return;
+								break;
 							}
 							else{
-								cerr << "Bad \"-\" type at line: " << t->lineno << endl;
-								return;
+								cerr <<"[line " <<t->lineno<<"]：Bad \"-\" type." << endl;
+								exit(1);
 							}
+							break;
 						}
 						//负数，-i
 						else{
 							if(t->children->type!=Integer){
-								cerr << "Bad \"-\" type at line: " << t->lineno << endl;
+								cerr <<"[line " <<t->lineno<<"]：Bad \"-\" type." << endl;
+								exit(1);
 							}
-							return;
+							break;
 						}
+						break;
 					//*，乘，同上
 					case LOP_MUL:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \"*\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"*\" type." << endl;
+							exit(1);
 						}
+						break;
 					case LOP_DIV:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \"/\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"/\" type." << endl;
+							exit(1);
 						}
+						break;
 					case LOP_MOD:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \"%\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"%\" type." << endl;
+							exit(1);
 						}
+						break;
 					//++，其孩子节点需要为int或char
 					case LOP_INC:
 						if(t->children->type!=Integer && t->children!=Char){
-							cerr << "Bad \"++\" type at line: " << t->lineno << endl;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"++\" type." << endl;
+							exit(1);
 						}
-						return;
+						break;
 					//--
 					case LOP_DEC:
 						if(t->children->type!=Integer && t->children!=Char){
-							cerr << "Bad \"--\" type at line: " << t->lineno << endl;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"--\" type." << endl;
+							exit(1);
 						}
-						return;
+						break;
 					//&&，两个孩子都要是boolean
 					case LOP_AND:
 						if(t->children->type!=Boolean || t->children->sibling->type!=Boolean){
-							cerr << "Bad \"&&\" type at line: " << t->lineno << endl;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"&&\" type." << endl;
+							exit(1);
 						}
-						return;
+						break;
 					// ||
 					case LOP_OR:
 						if(t->children->type!=Boolean || t->children->sibling->type!=Boolean){
-							cerr << "Bad \"||\" type at line: " << t->lineno << endl;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"||\" type." << endl;
+							exit(1);
 						}
-						return;
+						break;
 					// !
 					case LOP_OPPSITE:
 						if(t->children->type!=Boolean){
-							cerr << "Bad \"!\" type at line: " << t->lineno << endl;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"!\" type." << endl;
+							exit(1);
 						}
-						return;
+						break;
 					//<=，两个操作数可以都为int，都为char，一个是int，一个是char
 					case LOP_LE:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \"<=\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"<=\" type." << endl;
+							exit(1);
 						}
+						break;
 					//>=，两个操作数可以都为int，都为char，一个是int，一个是char
 					case LOP_GE:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \">=\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \">=\" type." << endl;
+							exit(1);
 						}
+						break;
 					//!=
 					case LOP_NZ:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \"!=\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"!=\" type." << endl;
+							exit(1);
 						}
+						break;
 					//>
 					case LOP_GT:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \">\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \">\" type." << endl;
+							exit(1);
 						}
+						break;
 					//<
 					case LOP_LT:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \"<\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"<\" type." << endl;
+							exit(1);
 						}
+						break;
 					//==
 					case LOP_EQ:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
-							return;
+							break;
 						}
 						else{
-							cerr << "Bad \"==\" type at line: " << t->lineno << endl;
-							return;
+							cerr <<"[line " <<t->lineno<<"]：Bad \"==\" type." << endl;
+							exit(1);
 						}
+						break;
 				}
 			}
 			break;
@@ -305,7 +346,8 @@ void tree::type_check(Node *t)
 						if(cur->kind_kind==STMT_RETURN){
 							//如果函数的返回值不等于函数的返回类型，报错
 							if(cur->children->type!=t->type){
-								cerr << "Bad return type at line: " << cur->lineno << endl;
+								cerr <<"[line " <<t->lineno<<"]：Bad return type." << endl;
+								exit(1);
 							}
 						}
 						cur=cur->sibling;
@@ -315,10 +357,9 @@ void tree::type_check(Node *t)
 			}
 			break;
 		default:
-			cerr << "Bad type at line: " << t->lineno << endl;
+			cerr <<"[line " <<t->lineno<<"]：Bad type." << endl;
+			exit(1);
 	}
-	if(t->kind == )
-	/* ... */
 	return;
 }
 
