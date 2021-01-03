@@ -1,3 +1,5 @@
+#ifndef SYMBOL_H
+#define SYMBOL_H
 #include "./pch.h"
 #define MAX_ID 1024
 using namespace std;
@@ -25,3 +27,4 @@ public:
 	int set_type(int pos,int type);
 	int get_type(int pos);
 };
+#endif

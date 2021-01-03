@@ -95,8 +95,7 @@ extern int yydebug;
     CHAR = 301,
     BOOL = 302,
     STRING = 303,
-    LOP_IAND = 304,
-    LOWER_THAN_ELSE = 305
+    LOWER_THAN_ELSE = 304
   };
 #endif
 

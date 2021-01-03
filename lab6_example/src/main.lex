@@ -41,7 +41,7 @@ RBRACE \}
 "if" return S_IF;
 "while" return S_WHILE;
 "else" return S_ELSE;
-"return" retuen S_RETURN;
+"return" return S_RETURN;
 
 "printf" return P_PRINTF;
 "scanf" return P_SCANF;
@@ -121,6 +121,7 @@ RBRACE \}
                 node->suspected_redefine=1;
             }
             node->number=tempNode->number;
+            node->type=tempNode->type;//类型也相同
             break;
         }
     }

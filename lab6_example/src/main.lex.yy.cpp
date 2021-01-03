@@ -519,7 +519,7 @@ char *yytext;
 #include<string.h>
 extern symbol_table symtbl;
 int lineno=1;
-extern parse_tree;
+extern tree parse_tree;
 extern int scope; //记录当前所处的作用域域的标号
 extern int symbolNum; //记录当前记录到第几个符号
 extern stack<Node*> currentScope; //栈中记录当前作用域的变量
@@ -853,7 +853,7 @@ return S_ELSE;
 case 11:
 YY_RULE_SETUP
 #line 44 "src/main.lex"
-retuen S_RETURN;
+return S_RETURN;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
@@ -992,7 +992,7 @@ YY_RULE_SETUP
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Integer);
     node->attr.vali = atoi(yytext);
-    node->seq=tree::node_seq++;
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
     yylval = node;
     return INTEGER;
@@ -1004,7 +1004,7 @@ YY_RULE_SETUP
 {
     NodeAttr attr=NodeAttr(yytext[1]);
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Char);
-    node->seq=tree::node_seq++;
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
     yylval = node;
     return CHAR;
@@ -1016,7 +1016,7 @@ YY_RULE_SETUP
 {
     NodeAttr attr=NodeAttr(yytext[1]);
     Node* node = new Node(lineno,NODE_CONST,-1,attr,String);
-    node->seq=tree::node_seq++;
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
     yylval=node;
     return STRING;
@@ -1028,8 +1028,8 @@ YY_RULE_SETUP
 {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_VAR,VAR_COMMON,attr,Notype);
-    node->attr.var_name=string(yytext)
-    node->seq=tree::node_seq++;
+    node->attr.var_name=string(yytext);
+    node->seq=parse_tree.node_seq++;
     node->firstScope=scope; //初始域号=当前域号
     /*遍历栈，判断是否有小于其起始域且var_name相同的符号
     * 如果有，则当前结点的序号=那个结点的序号，退出遍历
@@ -1040,12 +1040,13 @@ YY_RULE_SETUP
         tempNode=currentScope.top();
         currentScope.pop();
         tempStack.push(tempNode);
-        if(node->var_name.compare(tempNode->attr.var_name)==0 && node->firstScope>=tempNode->firstScope){
+        if(node->attr.var_name.compare(tempNode->attr.var_name)==0 && node->firstScope>=tempNode->firstScope){
             if(node->firstScope==tempNode->firstScope){
                 //如果相同的作用域内存在相同的符号，则将当前符号的疑似重定义位置1
                 node->suspected_redefine=1;
             }
             node->number=tempNode->number;
+            node->type=tempNode->type;//类型也相同
             break;
         }
     }
@@ -1061,7 +1062,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 137 "src/main.lex"
+#line 138 "src/main.lex"
 {
     scope++;
     return LBRACE;
@@ -1069,7 +1070,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 142 "src/main.lex"
+#line 143 "src/main.lex"
 {
     scope--;
     //遍历栈，删除firstScope>scope的结点
@@ -1093,28 +1094,28 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 163 "src/main.lex"
+#line 164 "src/main.lex"
 /* do nothing */
 	YY_BREAK
 case 45:
 /* rule 45 can match eol */
 YY_RULE_SETUP
-#line 165 "src/main.lex"
+#line 166 "src/main.lex"
 lineno++;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 167 "src/main.lex"
+#line 168 "src/main.lex"
 {
     cerr << "[line "<< lineno <<" ] unknown character:" << yytext << endl;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 170 "src/main.lex"
+#line 171 "src/main.lex"
 ECHO;
 	YY_BREAK
-#line 1118 "src/main.lex.yy.cpp"
+#line 1119 "src/main.lex.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2082,5 +2083,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 170 "src/main.lex"
+#line 171 "src/main.lex"
 

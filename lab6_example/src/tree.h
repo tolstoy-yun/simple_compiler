@@ -126,6 +126,7 @@ public:
 	void output(void);
 
 	Node(int lineno,NodeType kind, int kind_kind, NodeAttr attr, int type);
+	Node();
 	void addChild(Node* t);
     void addSibling(Node* t);
 	void genNodeId();
@@ -141,21 +142,21 @@ public:
 
 public:
 	void type_check(Node *t);
-	void get_temp_var(Node *t);
-	string new_label(void);
-	void recursive_get_label(Node *t);
-	void stmt_get_label(Node *t);
-	void expr_get_label(Node *t);
-	void gen_header(ostream &out);
-	void gen_decl(ostream &out, Node *t);
-	void recursive_gen_code(ostream &out, Node *t);
-	void stmt_gen_code(ostream &out, Node *t);
-	void expr_gen_code(ostream &out, Node *t);
+	// void get_temp_var(Node *t);
+	// string new_label(void);
+	// void recursive_get_label(Node *t);
+	// void stmt_get_label(Node *t);
+	// void expr_get_label(Node *t);
+	// void gen_header(ostream &out);
+	// void gen_decl(ostream &out, Node *t);
+	// void recursive_gen_code(ostream &out, Node *t);
+	// void stmt_gen_code(ostream &out, Node *t);
+	// void expr_gen_code(ostream &out, Node *t);
 
 public:
-	Node *NewRoot(NodeType kind, int kind_kind, NodeAttr attr, int type,
+	Node* NewRoot(int lineno,NodeType kind, int kind_kind, NodeAttr attr, int type,
 		Node *child = NULL);
-	void get_label(void);
-	void gen_code(ostream &out);
+	// void get_label(void);
+	// void gen_code(ostream &out);
 };
 #endif

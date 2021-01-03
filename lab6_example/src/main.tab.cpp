@@ -73,7 +73,7 @@
     extern int lineno;
     extern ofstream fout;
     extern symbol_table symtbl;
-    extern parse_tree;
+    extern tree parse_tree;
     extern int scope; //记录当前所处的作用域域的标号
     extern int symbolNum; //记录当前记录到第几个符号
     extern stack<Node*> currentScope; //栈中记录当前作用域的变量
@@ -174,8 +174,7 @@ extern int yydebug;
     CHAR = 301,
     BOOL = 302,
     STRING = 303,
-    LOP_IAND = 304,
-    LOWER_THAN_ELSE = 305
+    LOWER_THAN_ELSE = 304
   };
 #endif
 
@@ -497,10 +496,10 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  46
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   534
+#define YYLAST   522
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  51
+#define YYNTOKENS  50
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  16
 /* YYNRULES -- Number of rules.  */
@@ -509,7 +508,7 @@ union yyalloc
 #define YYNSTATES  139
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   305
+#define YYMAXUTOK   304
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -551,20 +550,20 @@ static const yytype_int8 yytranslate[] =
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50
+      45,    46,    47,    48,    49
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    46,    46,    53,    54,    58,    64,    65,    66,    67,
-      68,    69,    70,    71,    72,    73,    77,    87,   148,   171,
-     195,   201,   207,   213,   219,   227,   228,   231,   242,   255,
-     266,   275,   287,   295,   306,   317,   318,   319,   320,   324,
-     327,   330,   333,   336,   345,   354,   363,   372,   380,   389,
-     398,   407,   415,   423,   432,   441,   449,   458,   467,   476,
-     485,   494,   503,   504,   512
+       0,    43,    43,    50,    51,    55,    62,    63,    64,    65,
+      66,    67,    68,    69,    70,    71,    75,    86,   154,   179,
+     204,   211,   218,   225,   232,   241,   242,   245,   256,   269,
+     280,   289,   301,   309,   320,   331,   332,   333,   334,   338,
+     341,   344,   347,   350,   359,   368,   377,   386,   395,   404,
+     413,   422,   430,   438,   447,   456,   464,   473,   482,   491,
+     500,   509,   518,   519,   527
 };
 #endif
 
@@ -580,7 +579,7 @@ static const char *const yytname[] =
   "LOP_PLUS_ASSIGN", "LOP_MINUS_ASSIGN", "LOP_AND", "LOP_OR",
   "LOP_OPPSITE", "LOP_LE", "LOP_GE", "LOP_NZ", "LOP_GT", "LOP_LT",
   "LOP_EQ", "SEMICOLON", "COMMA", "LPAREN", "RPAREN", "LBRACE", "RBRACE",
-  "QUOTE", "IDENTIFIER", "INTEGER", "CHAR", "BOOL", "STRING", "LOP_IAND",
+  "QUOTE", "IDENTIFIER", "INTEGER", "CHAR", "BOOL", "STRING",
   "LOWER_THAN_ELSE", "$accept", "program", "statements", "statement",
   "return_stmt", "declaration", "func", "T", "IDLIST", "for_stmt",
   "while_stmt", "if_stmt", "printf", "scanf", "specialID", "expr", YY_NULLPTR
@@ -596,12 +595,11 @@ static const yytype_int16 yytoknum[] =
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
-     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305
+     295,   296,   297,   298,   299,   300,   301,   302,   303,   304
 };
 # endif
 
-#define YYPACT_NINF (-43)
+#define YYPACT_NINF (-72)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -615,20 +613,20 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-     159,   -43,   -43,   -43,   -43,   -43,     4,     5,    12,    -7,
-      13,    25,    -7,    -7,    -7,   -43,    -7,   159,   -43,   -43,
-     -43,   -43,     6,   159,   -43,   -43,   -16,   -43,    52,   -43,
-     -43,   -43,    -8,    32,   351,   205,    -7,    -7,   371,    26,
-      28,   215,   215,   -43,   236,   113,   -43,   -43,   -43,    34,
-      39,   451,   -43,   -43,    -7,    -7,    -7,    -7,    -7,    -7,
-     -43,   -43,    -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,
-      -7,    -7,   -43,    41,    -7,   391,   259,   282,   -43,   -18,
-      42,   -43,   -43,    23,    -7,     0,   215,   215,   -10,   -10,
-     -10,     0,     0,   470,   195,   507,   507,   489,   507,   507,
-     489,    -7,    -7,   159,   159,   -42,   -43,   -42,   159,    35,
-     -43,    -5,   451,   411,   431,    17,   -43,    -4,     2,   -43,
-     -43,   -33,   159,    -7,    -7,   159,   -43,   -43,    37,   -43,
-     -43,   305,   328,   -43,   -43,   159,   159,   -43,   -43
+     159,   -72,   -72,   -72,   -72,   -72,   -10,     1,     5,    -7,
+      12,    13,    -7,    -7,    -7,   -72,    -7,   159,   -72,   -72,
+     -72,   -72,    10,   159,   -72,   -72,   -20,   -72,    52,   -72,
+     -72,   -72,   -16,    26,   351,   205,    -7,    -7,   371,    16,
+      25,    45,    45,   -23,   236,   113,   -72,   -72,   -72,    35,
+      -8,   451,   -72,   -72,    -7,    -7,    -7,    -7,    -7,    -7,
+     -72,   -72,    -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,
+      -7,    -7,   -72,    39,    -7,   391,   259,   282,   -72,   -32,
+      40,   -72,   -72,   -29,    -7,   451,    45,    45,   -23,   -23,
+     -23,   451,   451,   469,   195,    82,    82,   487,    82,    82,
+     487,    -7,    -7,   159,   159,   -19,   -72,   -19,   159,    33,
+     -72,   -22,   451,   411,   431,    66,   -72,   -18,    -5,   -72,
+     -72,    -1,   159,    -7,    -7,   159,   -72,   -72,    36,   -72,
+     -72,   305,   328,   -72,   -72,   159,   159,   -72,   -72
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -655,8 +653,8 @@ static const yytype_int8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -43,   -43,    66,   -14,   -43,    49,   -43,    50,   -43,   -43,
-     -43,   -43,   -43,   -43,   -37,    -9
+     -72,   -72,    64,   -14,   -72,    48,   -72,    49,   -72,   -72,
+     -72,   -72,   -72,   -72,   -71,    -9
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -671,17 +669,17 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      38,   109,   110,    41,    42,    43,    46,    44,    54,    47,
-     128,   129,    12,    13,    60,    61,    62,    63,    54,    51,
-     105,    48,   106,    14,    60,    61,    75,    76,    77,    52,
-     125,    47,    16,   121,   121,   122,   126,    18,    19,    20,
-     121,    21,   127,    35,    36,    85,    86,    87,    88,    89,
-      90,    37,    39,    91,    92,    93,    94,    95,    96,    97,
-      98,    99,   100,   108,    40,    51,   109,   110,   117,    53,
-     118,    12,    13,    83,    79,   112,    80,    84,   101,   120,
-     107,   134,    14,    45,    73,    74,     0,     0,     0,   115,
+      38,    60,    61,    41,    42,    43,   105,    44,   106,    47,
+      46,   108,    12,    13,   109,   110,   121,    48,   122,    51,
+     121,    52,   126,    14,   109,   110,    75,    76,    77,    35,
+      84,    47,    16,   121,   117,   127,   118,    18,    19,    20,
+      36,    21,   128,   129,    37,    85,    86,    87,    88,    89,
+      90,    39,    40,    91,    92,    93,    94,    95,    96,    97,
+      98,    99,   100,    53,    79,    51,    57,    58,    59,    60,
+      61,    12,    13,    80,    83,   112,   101,   120,   107,   125,
+     134,    45,    14,    73,    74,     0,     0,     0,     0,   115,
      116,    16,   113,   114,   119,     0,    49,    19,    20,     0,
-      21,     0,     0,     0,     0,     0,     0,     0,   130,     0,
+      21,    55,    56,    57,    58,    59,    60,    61,   130,     0,
        0,   133,     0,     0,   131,   132,     1,     2,     3,     4,
        5,   137,   138,     6,     7,     8,     0,     0,     9,    10,
       11,     0,    12,    13,     0,     0,     0,     0,     0,     0,
@@ -692,10 +690,10 @@ static const yytype_uint8 yytable[] =
        0,     0,     0,     0,     0,     0,     0,     0,     0,    14,
        0,     0,     0,     0,     0,     0,    15,     0,    16,     0,
       17,     0,     0,    18,    19,    20,     0,    21,     1,     2,
-       3,     4,     5,    54,    55,    56,    57,    58,    59,    60,
-      61,    62,    63,    64,    12,    13,    66,    67,    68,    69,
-      70,    71,     0,    54,     0,    14,    57,    58,    59,    60,
-      61,    62,    63,     0,    16,     0,     0,     0,     0,    18,
+       3,     4,     5,     0,    55,    56,    57,    58,    59,    60,
+      61,     0,     0,    64,    12,    13,    66,    67,    68,    69,
+      70,    71,     0,     0,     0,    14,     0,     0,     0,     0,
+       0,     0,     0,     0,    16,     0,     0,     0,     0,    18,
       19,    20,     0,    21,    54,    55,    56,    57,    58,    59,
       60,    61,    62,    63,    64,    65,     0,    66,    67,    68,
       69,    70,    71,     0,     0,     0,    81,    54,    55,    56,
@@ -719,27 +717,26 @@ static const yytype_uint8 yytable[] =
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
       65,     0,    66,    67,    68,    69,    70,    71,   124,    54,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65,     0,    66,    67,    68,    69,    70,    71,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,     0,     0,
-       0,    66,    67,    68,    69,    70,    71,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,     0,     0,     0,
-      66,    67,     0,    69,    70,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63
+      65,     0,    66,    67,    68,    69,    70,    71,    55,    56,
+      57,    58,    59,    60,    61,     0,     0,     0,     0,     0,
+      66,    67,    68,    69,    70,    71,    55,    56,    57,    58,
+      59,    60,    61,     0,     0,     0,     0,     0,    66,    67,
+       0,    69,    70
 };
 
 static const yytype_int16 yycheck[] =
 {
-       9,    43,    44,    12,    13,    14,     0,    16,    18,    23,
-      43,    44,    19,    20,    24,    25,    26,    27,    18,    28,
-      38,    37,    40,    30,    24,    25,    35,    36,    37,    37,
-      13,    45,    39,    38,    38,    40,    40,    44,    45,    46,
-      38,    48,    40,    39,    39,    54,    55,    56,    57,    58,
+       9,    24,    25,    12,    13,    14,    38,    16,    40,    23,
+       0,    40,    19,    20,    43,    44,    38,    37,    40,    28,
+      38,    37,    40,    30,    43,    44,    35,    36,    37,    39,
+      38,    45,    39,    38,   105,    40,   107,    44,    45,    46,
+      39,    48,    43,    44,    39,    54,    55,    56,    57,    58,
       59,    39,    39,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    40,    39,    74,    43,    44,   105,    37,
-     107,    19,    20,    39,    48,    84,    48,    38,    37,    44,
-      38,    44,    30,    17,    35,    35,    -1,    -1,    -1,   103,
+      69,    70,    71,    37,    48,    74,    21,    22,    23,    24,
+      25,    19,    20,    48,    39,    84,    37,    44,    38,    13,
+      44,    17,    30,    35,    35,    -1,    -1,    -1,    -1,   103,
      104,    39,   101,   102,   108,    -1,    44,    45,    46,    -1,
-      48,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   122,    -1,
+      48,    19,    20,    21,    22,    23,    24,    25,   122,    -1,
       -1,   125,    -1,    -1,   123,   124,     3,     4,     5,     6,
        7,   135,   136,    10,    11,    12,    -1,    -1,    15,    16,
       17,    -1,    19,    20,    -1,    -1,    -1,    -1,    -1,    -1,
@@ -750,10 +747,10 @@ static const yytype_int16 yycheck[] =
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    30,
       -1,    -1,    -1,    -1,    -1,    -1,    37,    -1,    39,    -1,
       41,    -1,    -1,    44,    45,    46,    -1,    48,     3,     4,
-       5,     6,     7,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    19,    20,    31,    32,    33,    34,
-      35,    36,    -1,    18,    -1,    30,    21,    22,    23,    24,
-      25,    26,    27,    -1,    39,    -1,    -1,    -1,    -1,    44,
+       5,     6,     7,    -1,    19,    20,    21,    22,    23,    24,
+      25,    -1,    -1,    28,    19,    20,    31,    32,    33,    34,
+      35,    36,    -1,    -1,    -1,    30,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    39,    -1,    -1,    -1,    -1,    44,
       45,    46,    -1,    48,    18,    19,    20,    21,    22,    23,
       24,    25,    26,    27,    28,    29,    -1,    31,    32,    33,
       34,    35,    36,    -1,    -1,    -1,    40,    18,    19,    20,
@@ -777,12 +774,11 @@ static const yytype_int16 yycheck[] =
       19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
       29,    -1,    31,    32,    33,    34,    35,    36,    37,    18,
       19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    -1,    31,    32,    33,    34,    35,    36,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    -1,    -1,
-      -1,    31,    32,    33,    34,    35,    36,    18,    19,    20,
-      21,    22,    23,    24,    25,    26,    27,    -1,    -1,    -1,
-      31,    32,    -1,    34,    35,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27
+      29,    -1,    31,    32,    33,    34,    35,    36,    19,    20,
+      21,    22,    23,    24,    25,    -1,    -1,    -1,    -1,    -1,
+      31,    32,    33,    34,    35,    36,    19,    20,    21,    22,
+      23,    24,    25,    -1,    -1,    -1,    -1,    -1,    31,    32,
+      -1,    34,    35
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -791,30 +787,30 @@ static const yytype_int8 yystos[] =
 {
        0,     3,     4,     5,     6,     7,    10,    11,    12,    15,
       16,    17,    19,    20,    30,    37,    39,    41,    44,    45,
-      46,    48,    52,    53,    54,    55,    56,    57,    58,    60,
-      61,    62,    63,    64,    66,    39,    39,    39,    66,    39,
-      39,    66,    66,    66,    66,    53,     0,    54,    37,    44,
-      59,    66,    37,    37,    18,    19,    20,    21,    22,    23,
+      46,    48,    51,    52,    53,    54,    55,    56,    57,    59,
+      60,    61,    62,    63,    65,    39,    39,    39,    65,    39,
+      39,    65,    65,    65,    65,    52,     0,    53,    37,    44,
+      58,    65,    37,    37,    18,    19,    20,    21,    22,    23,
       24,    25,    26,    27,    28,    29,    31,    32,    33,    34,
-      35,    36,    37,    56,    58,    66,    66,    66,    37,    48,
-      48,    40,    42,    39,    38,    66,    66,    66,    66,    66,
-      66,    66,    66,    66,    66,    66,    66,    66,    66,    66,
-      66,    37,    37,    40,    40,    38,    40,    38,    40,    43,
-      44,    65,    66,    66,    66,    54,    54,    65,    65,    54,
+      35,    36,    37,    55,    57,    65,    65,    65,    37,    48,
+      48,    40,    42,    39,    38,    65,    65,    65,    65,    65,
+      65,    65,    65,    65,    65,    65,    65,    65,    65,    65,
+      65,    37,    37,    40,    40,    38,    40,    38,    40,    43,
+      44,    64,    65,    65,    65,    53,    53,    64,    64,    53,
       44,    38,    40,    37,    37,    13,    40,    40,    43,    44,
-      54,    66,    66,    54,    44,    40,    40,    54,    54
+      53,    65,    65,    53,    44,    40,    40,    53,    53
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    51,    52,    53,    53,    54,    54,    54,    54,    54,
-      54,    54,    54,    54,    54,    54,    55,    56,    57,    57,
-      58,    58,    58,    58,    58,    59,    59,    60,    60,    61,
-      62,    62,    63,    63,    64,    65,    65,    65,    65,    66,
-      66,    66,    66,    66,    66,    66,    66,    66,    66,    66,
-      66,    66,    66,    66,    66,    66,    66,    66,    66,    66,
-      66,    66,    66,    66,    66
+       0,    50,    51,    52,    52,    53,    53,    53,    53,    53,
+      53,    53,    53,    53,    53,    53,    54,    55,    56,    56,
+      57,    57,    57,    57,    57,    58,    58,    59,    59,    60,
+      61,    61,    62,    62,    63,    64,    64,    64,    64,    65,
+      65,    65,    65,    65,    65,    65,    65,    65,    65,    65,
+      65,    65,    65,    65,    65,    65,    65,    65,    65,    65,
+      65,    65,    65,    65,    65
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1522,141 +1518,146 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 46 "src/main.y"
+#line 43 "src/main.y"
              {
     NodeAttr attr=NodeAttr();
     parse_tree.root =parse_tree.NewRoot(0, NODE_PROG,-1,attr,Notype,yyvsp[0]); 
-    parse_tree.type_check(node);
+    parse_tree.type_check(parse_tree.root);
 }
-#line 1532 "src/main.tab.cpp"
+#line 1528 "src/main.tab.cpp"
     break;
 
   case 3:
-#line 53 "src/main.y"
+#line 50 "src/main.y"
              {yyval=yyvsp[0];}
-#line 1538 "src/main.tab.cpp"
+#line 1534 "src/main.tab.cpp"
     break;
 
   case 4:
-#line 54 "src/main.y"
+#line 51 "src/main.y"
                         {yyval=yyvsp[-1]; yyval->addSibling(yyvsp[0]);}
-#line 1544 "src/main.tab.cpp"
+#line 1540 "src/main.tab.cpp"
     break;
 
   case 5:
-#line 58 "src/main.y"
+#line 55 "src/main.y"
              {
     NodeAttr attr=NodeAttr(); 
-    yyval = new Node(lineno, NODE_STMT,STMT_SKIP,attr,Notype); 
-    node->seq=tree::node_seq++;
+    Node* node = new Node(lineno, NODE_STMT,STMT_SKIP,attr,Notype); 
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
+    yyval=node;
 }
-#line 1555 "src/main.tab.cpp"
+#line 1552 "src/main.tab.cpp"
     break;
 
   case 6:
-#line 64 "src/main.y"
+#line 62 "src/main.y"
                         {yyval = yyvsp[-1];}
-#line 1561 "src/main.tab.cpp"
+#line 1558 "src/main.tab.cpp"
     break;
 
   case 7:
-#line 65 "src/main.y"
+#line 63 "src/main.y"
                            {yyval=yyvsp[-1];}
-#line 1567 "src/main.tab.cpp"
+#line 1564 "src/main.tab.cpp"
     break;
 
   case 8:
-#line 66 "src/main.y"
+#line 64 "src/main.y"
           {yyval=yyvsp[0];}
-#line 1573 "src/main.tab.cpp"
+#line 1570 "src/main.tab.cpp"
     break;
 
   case 9:
-#line 67 "src/main.y"
+#line 65 "src/main.y"
              {yyval=yyvsp[0];}
-#line 1579 "src/main.tab.cpp"
+#line 1576 "src/main.tab.cpp"
     break;
 
   case 10:
-#line 68 "src/main.y"
+#line 66 "src/main.y"
            {yyval=yyvsp[0];}
-#line 1585 "src/main.tab.cpp"
+#line 1582 "src/main.tab.cpp"
     break;
 
   case 11:
-#line 69 "src/main.y"
+#line 67 "src/main.y"
                    {yyval=yyvsp[-1];}
-#line 1591 "src/main.tab.cpp"
+#line 1588 "src/main.tab.cpp"
     break;
 
   case 12:
-#line 70 "src/main.y"
+#line 68 "src/main.y"
                   {yyval=yyvsp[-1];}
-#line 1597 "src/main.tab.cpp"
+#line 1594 "src/main.tab.cpp"
     break;
 
   case 13:
-#line 71 "src/main.y"
+#line 69 "src/main.y"
                  {yyval=yyvsp[-1];}
-#line 1603 "src/main.tab.cpp"
+#line 1600 "src/main.tab.cpp"
     break;
 
   case 14:
-#line 72 "src/main.y"
+#line 70 "src/main.y"
        {yyval=yyvsp[0];}
-#line 1609 "src/main.tab.cpp"
+#line 1606 "src/main.tab.cpp"
     break;
 
   case 15:
-#line 73 "src/main.y"
+#line 71 "src/main.y"
               {yyval = yyvsp[0];}
-#line 1615 "src/main.tab.cpp"
+#line 1612 "src/main.tab.cpp"
     break;
 
   case 16:
-#line 77 "src/main.y"
+#line 75 "src/main.y"
                          {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(yyvsp[-1]->lineno, NODE_STMT,STMT_RETURN,attr,yyvsp[-1]->type);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-1]);
     parse_tree.type_check(node);
     yyval = node;
 }
-#line 1627 "src/main.tab.cpp"
+#line 1625 "src/main.tab.cpp"
     break;
 
   case 17:
-#line 87 "src/main.y"
+#line 86 "src/main.y"
            {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(yyvsp[-1]->lineno, NODE_STMT,STMT_DECL,attr,yyvsp[-1]->type);
-    node->seq=tree::node_seq++;
-
+    node->seq=parse_tree.node_seq++;
+    cout<<"到声明变量，行号为"<<node->lineno<<endl;
     //如果$2的类型是var
     //将$2压入currentScope栈，并分配一个符号（=symbolNum）
-    if(yyvsp[0]->nodeType==NODE_VAR){
+    if(yyvsp[0]->kind==NODE_VAR){
+        cout<<"到这里1"<<endl;
         //疑似重定义位为1，说明存在重定义现象，报错，退出
         if(yyvsp[0]->suspected_redefine==1){
-            cerr << "line " <<yyvsp[0]->lineno<<"："<<yyvsp[0]->attr.var_name <<"has been declared before."<< endl;
+            cerr << "[line " <<yyvsp[0]->lineno<<"]："<<yyvsp[0]->attr.var_name <<" has been declared before."<< endl;
             exit(1);
         }
         // 疑似重定义位为0，说明不存在重定义
         // 将其加入符号表，并将$2在符号表里的type设为与T一致
-        yyvsp[0]->pos=symtbl.insert(yyvsp[0]->attr.var_name,VAR_CONST);
+        yyvsp[0]->pos=symtbl.insert(yyvsp[0]->attr.var_name,VAR_COMMON);
+        yyvsp[0]->type=yyvsp[-1]->type;
         symtbl.set_type(yyvsp[0]->pos,yyvsp[-1]->type);
         yyvsp[0]->number=symbolNum;
-        
+        cout<<"插完符号表啦"<<endl;
         symbolNum++;
         currentScope.push(yyvsp[0]);
          //将$2的兄弟结点也设置type
          Node* temp=yyvsp[0]->sibling;
          while(temp){
             if(temp->suspected_redefine==1){
-                cerr << "[line " <<temp->lineno<<"]："<<temp->attr.var_name <<"has been declared before."<< endl;
+                cerr << "[line " <<temp->lineno<<"]："<<temp->attr.var_name <<" has been declared before."<< endl;
                 exit(1);
             }
-            temp->pos=symtbl.insert(temp->attr.var_name,VAR_CONST);
+            temp->pos=symtbl.insert(temp->attr.var_name,VAR_COMMON);
+            temp->type=yyvsp[-1]->type;
             symtbl.set_type(temp->pos,yyvsp[-1]->type);
             temp->number=symbolNum;
             currentScope.push(temp);
@@ -1666,15 +1667,17 @@ yyreduce:
     //$2的类型是expr，对应T IDENTIFIER=n,……;的情况
     //遍历$2及其兄弟结点，将它们的第一个孩子结点压栈并分配符号，设置其类型
     else{
+        cout<<"到这里2"<<endl; 
         Node* t=nullptr;
         t=yyvsp[0];
         while(t){
-            Node* cur=t->child;
+            Node* cur=t->children;
             if(cur->suspected_redefine==1){
-                cerr << "[line " <<cur->lineno<<"]："<<cur->attr.var_name <<"has been declared before."<< endl;
+                cerr << "[line " <<cur->lineno<<"]："<<cur->attr.var_name <<" has been declared before."<< endl;
                 exit(1);
             }
-            cur->pos=symtbl.insert(cur->attr.var_name,VAR_CONST);
+            cur->pos=symtbl.insert(cur->attr.var_name,VAR_COMMON);
+            cur->type=yyvsp[-1]->type;
             symtbl.set_type(cur->pos,yyvsp[-1]->type);
             cur->number=symbolNum;
             symbolNum++;
@@ -1682,26 +1685,29 @@ yyreduce:
             t=t->sibling;
         }
     }
-    parse_tree.type_check(node);
+    cout<<"到类型检查了"<<endl;
     node->addChild(yyvsp[-1]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval = node;
+    cout<<"声明结束"<<endl;
 }
-#line 1691 "src/main.tab.cpp"
+#line 1696 "src/main.tab.cpp"
     break;
 
   case 18:
-#line 148 "src/main.y"
+#line 154 "src/main.y"
                                                     {
     NodeAttr attr=NodeAttr();
     Node* node=new Node(yyvsp[-4]->lineno,NODE_FUNC,-1,attr,yyvsp[-5]->type);
-    node->seq=tree::node_seq++;
+    node->seq=parse_tree.node_seq++;
     //如果没有重定义，则放入符号表
     if(yyvsp[-4]->suspected_redefine==1){
-        cerr << "[line " <<yyvsp[-4]->lineno<<"]："<<yyvsp[-4]->attr.var_name <<"has been declared before."<< endl;
+        cerr << "[line " <<yyvsp[-4]->lineno<<"]："<<yyvsp[-4]->attr.var_name <<" has been declared before."<< endl;
         exit(1);
     }
-    yyvsp[-4]->pos=symtbl.insert(yyvsp[-4]->attr.var_name,VAR_CONST);
+    yyvsp[-4]->pos=symtbl.insert(yyvsp[-4]->attr.var_name,VAR_COMMON);
+    yyvsp[-4]->type=yyvsp[-5]->type;
     symtbl.set_type(yyvsp[-4]->pos,yyvsp[-5]->type);
 
     //变量遇到T开头的定义，压入currentScope栈，并分配一个符号（=symbolNum）
@@ -1713,22 +1719,24 @@ yyreduce:
     node->addChild(yyvsp[-4]);
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 1719 "src/main.tab.cpp"
+#line 1726 "src/main.tab.cpp"
     break;
 
   case 19:
-#line 171 "src/main.y"
+#line 179 "src/main.y"
                                       {
     NodeAttr attr=NodeAttr();
     Node* node=new Node(yyvsp[-3]->lineno,NODE_FUNC,-1,attr,yyvsp[-4]->type);
-    node->seq=tree::node_seq++;
+    node->seq=parse_tree.node_seq++;
     if(yyvsp[-3]->suspected_redefine==1){
-        cerr << "[line " <<yyvsp[-3]->lineno<<"]："<<yyvsp[-3]->attr.var_name <<"has been declared before."<< endl;
+        cerr << "[line " <<yyvsp[-3]->lineno<<"]："<<yyvsp[-3]->attr.var_name <<" has been declared before."<< endl;
         exit(1);
     }
-    yyvsp[-3]->pos=symtbl.insert(yyvsp[-3]->attr.var_name,VAR_CONST);
+    yyvsp[-3]->pos=symtbl.insert(yyvsp[-3]->attr.var_name,VAR_COMMON);
+    yyvsp[-3]->type=yyvsp[-4]->type;
     symtbl.set_type(yyvsp[-3]->pos,yyvsp[-4]->type);
 
     //变量遇到T开头的定义，压入currentScope栈，并分配一个符号（=symbolNum）
@@ -1736,550 +1744,556 @@ yyreduce:
     symbolNum++;
     currentScope.push(yyvsp[-3]);
 
-    parse_tree.type_check(node);
     node->addChild(yyvsp[-4]);
     node->addChild(yyvsp[-3]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 1746 "src/main.tab.cpp"
+#line 1754 "src/main.tab.cpp"
     break;
 
   case 20:
-#line 195 "src/main.y"
+#line 204 "src/main.y"
          {
     NodeAttr attr=NodeAttr(); 
-    yyval = new Node(lineno, NODE_TYPE,TYPE_INT,attr,Integer); 
-    node->seq=tree::node_seq++;
+    Node* node = new Node(lineno, NODE_TYPE,TYPE_INT,attr,Integer); 
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
+    yyval=node;
 }
-#line 1757 "src/main.tab.cpp"
+#line 1766 "src/main.tab.cpp"
     break;
 
   case 21:
-#line 201 "src/main.y"
+#line 211 "src/main.y"
          {
     NodeAttr attr=NodeAttr(); 
-    yyval = new Node(lineno, NODE_TYPE,TYPE_CHAR,attr,Char); 
-    node->seq=tree::node_seq++;
+    Node* node = new Node(lineno, NODE_TYPE,TYPE_CHAR,attr,Char); 
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
+    yyval=node;
 }
-#line 1768 "src/main.tab.cpp"
+#line 1778 "src/main.tab.cpp"
     break;
 
   case 22:
-#line 207 "src/main.y"
+#line 218 "src/main.y"
          {
     NodeAttr attr=NodeAttr(); 
-    yyval = new Node(lineno, NODE_TYPE,TYPE_BOOL,attr,Boolean); 
-    node->seq=tree::node_seq++;
+    Node* node = new Node(lineno, NODE_TYPE,TYPE_BOOL,attr,Boolean); 
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
-}
-#line 1779 "src/main.tab.cpp"
-    break;
-
-  case 23:
-#line 213 "src/main.y"
-         {
-    NodeAttr attr=NodeAttr(); 
-    yyval = new Node(lineno, NODE_TYPE,FUNC_VOID,attr,Notype); 
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    yyval=node;
 }
 #line 1790 "src/main.tab.cpp"
     break;
 
+  case 23:
+#line 225 "src/main.y"
+         {
+    NodeAttr attr=NodeAttr(); 
+    Node* node = new Node(lineno, NODE_TYPE,FUNC_VOID,attr,Notype); 
+    node->seq=parse_tree.node_seq++;
+    parse_tree.type_check(node);
+    yyval=node;
+}
+#line 1802 "src/main.tab.cpp"
+    break;
+
   case 24:
-#line 219 "src/main.y"
+#line 232 "src/main.y"
            {
     NodeAttr attr=NodeAttr(); 
-    yyval = new Node(lineno, NODE_TYPE,TYPE_STRING,attr,String); 
-    node->seq=tree::node_seq++;
+    Node* node = new Node(lineno, NODE_TYPE,TYPE_STRING,attr,String); 
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
+    yyval=node;
 }
-#line 1801 "src/main.tab.cpp"
+#line 1814 "src/main.tab.cpp"
     break;
 
   case 25:
-#line 227 "src/main.y"
+#line 241 "src/main.y"
                           {yyval=yyvsp[-2]; yyval->addSibling(yyvsp[0]);}
-#line 1807 "src/main.tab.cpp"
+#line 1820 "src/main.tab.cpp"
     break;
 
   case 26:
-#line 228 "src/main.y"
+#line 242 "src/main.y"
        {yyval=yyvsp[0];}
-#line 1813 "src/main.tab.cpp"
+#line 1826 "src/main.tab.cpp"
     break;
 
   case 27:
-#line 231 "src/main.y"
+#line 245 "src/main.y"
                                                                            {
     NodeAttr attr=NodeAttr();
     Node* node=new Node(yyvsp[-8]->lineno,NODE_STMT,STMT_FOR,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-6]);
     node->addChild(yyvsp[-4]);
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 1829 "src/main.tab.cpp"
+#line 1842 "src/main.tab.cpp"
     break;
 
   case 28:
-#line 242 "src/main.y"
+#line 256 "src/main.y"
                                                                           {
     NodeAttr attr=NodeAttr();
     Node* node=new Node(yyvsp[-8]->lineno,NODE_STMT,STMT_FOR,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-6]);
     node->addChild(yyvsp[-4]);
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 1845 "src/main.tab.cpp"
+#line 1858 "src/main.tab.cpp"
     break;
 
   case 29:
-#line 255 "src/main.y"
+#line 269 "src/main.y"
                                                  {
     NodeAttr attr=NodeAttr();
     Node* node=new Node(yyvsp[-4]->lineno,NODE_STMT,STMT_WHILE,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 1859 "src/main.tab.cpp"
+#line 1872 "src/main.tab.cpp"
     break;
 
   case 30:
-#line 266 "src/main.y"
+#line 280 "src/main.y"
                                                                 {
     NodeAttr attr=NodeAttr();
     Node* node=new Node(yyvsp[-2]->lineno,NODE_STMT,STMT_IF_ELSE,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 1873 "src/main.tab.cpp"
+#line 1886 "src/main.tab.cpp"
     break;
 
   case 31:
-#line 275 "src/main.y"
+#line 289 "src/main.y"
                                                     {
     NodeAttr attr=NodeAttr();
     Node* node=new Node(yyvsp[-4]->lineno,NODE_STMT,STMT_IF_ELSE,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-4]);
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
-    yyval=node;
-}
-#line 1888 "src/main.tab.cpp"
-    break;
-
-  case 32:
-#line 287 "src/main.y"
-                                      {
-    NodeAttr attr=NodeAttr();
-    Node* node=new Node(yyvsp[-3]->lineno,NODE_STMT,STMT_PRINTF,attr,Notype);
-    node->seq=tree::node_seq++;
     parse_tree.type_check(node);
-    node->addChild(yyvsp[-1]);
     yyval=node;
 }
 #line 1901 "src/main.tab.cpp"
     break;
 
+  case 32:
+#line 301 "src/main.y"
+                                      {
+    NodeAttr attr=NodeAttr();
+    Node* node=new Node(yyvsp[-3]->lineno,NODE_STMT,STMT_PRINTF,attr,Notype);
+    node->seq=parse_tree.node_seq++;
+    node->addChild(yyvsp[-1]);
+    parse_tree.type_check(node);
+    yyval=node;
+}
+#line 1914 "src/main.tab.cpp"
+    break;
+
   case 33:
-#line 295 "src/main.y"
+#line 309 "src/main.y"
                                                 {
     NodeAttr attr=NodeAttr();
     Node* node=new Node(yyvsp[-5]->lineno,NODE_STMT,STMT_PRINTF,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-3]);
     node->addChild(yyvsp[-1]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 1915 "src/main.tab.cpp"
+#line 1928 "src/main.tab.cpp"
     break;
 
   case 34:
-#line 306 "src/main.y"
+#line 320 "src/main.y"
                                                    {
     NodeAttr attr=NodeAttr();
     Node* node=new Node(yyvsp[-5]->lineno,NODE_STMT,STMT_SCANF,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-3]);
     node->addChild(yyvsp[-1]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 1929 "src/main.tab.cpp"
+#line 1942 "src/main.tab.cpp"
     break;
 
   case 35:
-#line 317 "src/main.y"
+#line 331 "src/main.y"
                      {yyval=yyvsp[0];}
-#line 1935 "src/main.tab.cpp"
+#line 1948 "src/main.tab.cpp"
     break;
 
   case 36:
-#line 318 "src/main.y"
+#line 332 "src/main.y"
                   {yyval=yyvsp[0];}
-#line 1941 "src/main.tab.cpp"
+#line 1954 "src/main.tab.cpp"
     break;
 
   case 37:
-#line 319 "src/main.y"
+#line 333 "src/main.y"
                             {yyval=yyvsp[-2];yyval->addSibling(yyvsp[0]);}
-#line 1947 "src/main.tab.cpp"
+#line 1960 "src/main.tab.cpp"
     break;
 
   case 38:
-#line 320 "src/main.y"
+#line 334 "src/main.y"
                                   {yyval=yyvsp[-3];yyval->addSibling(yyvsp[0]);}
-#line 1953 "src/main.tab.cpp"
+#line 1966 "src/main.tab.cpp"
     break;
 
   case 39:
-#line 324 "src/main.y"
+#line 338 "src/main.y"
              {
     yyval = yyvsp[0];
 }
-#line 1961 "src/main.tab.cpp"
+#line 1974 "src/main.tab.cpp"
     break;
 
   case 40:
-#line 327 "src/main.y"
+#line 341 "src/main.y"
           {
     yyval = yyvsp[0];
 }
-#line 1969 "src/main.tab.cpp"
+#line 1982 "src/main.tab.cpp"
     break;
 
   case 41:
-#line 330 "src/main.y"
+#line 344 "src/main.y"
        {
     yyval = yyvsp[0];
 }
-#line 1977 "src/main.tab.cpp"
+#line 1990 "src/main.tab.cpp"
     break;
 
   case 42:
-#line 333 "src/main.y"
+#line 347 "src/main.y"
          {
     yyval = yyvsp[0];
 }
-#line 1985 "src/main.tab.cpp"
+#line 1998 "src/main.tab.cpp"
     break;
 
   case 43:
-#line 336 "src/main.y"
+#line 350 "src/main.y"
                            {
     NodeAttr attr=NodeAttr(OP_PLUS_ASSIGN);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 1999 "src/main.tab.cpp"
+#line 2012 "src/main.tab.cpp"
     break;
 
   case 44:
-#line 345 "src/main.y"
+#line 359 "src/main.y"
                             {
     NodeAttr attr=NodeAttr(OP_MINUS_ASSIGN);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 2013 "src/main.tab.cpp"
+#line 2026 "src/main.tab.cpp"
     break;
 
   case 45:
-#line 354 "src/main.y"
+#line 368 "src/main.y"
                       {
     NodeAttr attr=NodeAttr(OP_ASSIGN);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Notype);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 2027 "src/main.tab.cpp"
+#line 2040 "src/main.tab.cpp"
     break;
 
   case 46:
-#line 363 "src/main.y"
+#line 377 "src/main.y"
                     {
     NodeAttr attr=NodeAttr(OP_PLUS);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[-2]->type);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
-    yyval=node;
-}
-#line 2041 "src/main.tab.cpp"
-    break;
-
-  case 47:
-#line 372 "src/main.y"
-                     {
-    NodeAttr attr=NodeAttr(OP_MINUS);
-    Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[-2]->type);
     parse_tree.type_check(node);
-    node->addChild(yyvsp[-2]);
-    node->addChild(yyvsp[0]);
     yyval=node;
 }
 #line 2054 "src/main.tab.cpp"
     break;
 
-  case 48:
-#line 380 "src/main.y"
-                   {
-    NodeAttr attr=NodeAttr(OP_MUL);
+  case 47:
+#line 386 "src/main.y"
+                     {
+    NodeAttr attr=NodeAttr(OP_MINUS);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[-2]->type);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
 #line 2068 "src/main.tab.cpp"
     break;
 
-  case 49:
-#line 389 "src/main.y"
+  case 48:
+#line 395 "src/main.y"
                    {
-    NodeAttr attr=NodeAttr(OP_DIV);
+    NodeAttr attr=NodeAttr(OP_MUL);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[-2]->type);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
 #line 2082 "src/main.tab.cpp"
     break;
 
-  case 50:
-#line 398 "src/main.y"
+  case 49:
+#line 404 "src/main.y"
                    {
-    NodeAttr attr=NodeAttr(OP_MOD);
+    NodeAttr attr=NodeAttr(OP_DIV);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[-2]->type);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
 #line 2096 "src/main.tab.cpp"
     break;
 
+  case 50:
+#line 413 "src/main.y"
+                   {
+    NodeAttr attr=NodeAttr(OP_MOD);
+    Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[-2]->type);
+    node->seq=parse_tree.node_seq++;
+    node->addChild(yyvsp[-2]);
+    node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
+    yyval=node;
+}
+#line 2110 "src/main.tab.cpp"
+    break;
+
   case 51:
-#line 407 "src/main.y"
+#line 422 "src/main.y"
               {
     NodeAttr attr=NodeAttr(OP_INC);
     Node* node=new Node(yyvsp[-1]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[-1]->type);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-1]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 2109 "src/main.tab.cpp"
+#line 2123 "src/main.tab.cpp"
     break;
 
   case 52:
-#line 415 "src/main.y"
+#line 430 "src/main.y"
               {
     NodeAttr attr=NodeAttr(OP_DEC);
     Node* node=new Node(yyvsp[-1]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[-1]->type);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-1]);
-    yyval=node;
-}
-#line 2122 "src/main.tab.cpp"
-    break;
-
-  case 53:
-#line 423 "src/main.y"
-                   {
-    NodeAttr attr=NodeAttr(OP_AND);
-    Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
-    node->seq=tree::node_seq++;
     parse_tree.type_check(node);
-    node->addChild(yyvsp[-2]);
-    node->addChild(yyvsp[0]);
     yyval=node;
 }
 #line 2136 "src/main.tab.cpp"
     break;
 
-  case 54:
-#line 432 "src/main.y"
-                  {
-    NodeAttr attr=NodeAttr(OP_OR);
+  case 53:
+#line 438 "src/main.y"
+                   {
+    NodeAttr attr=NodeAttr(OP_AND);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
 #line 2150 "src/main.tab.cpp"
     break;
 
+  case 54:
+#line 447 "src/main.y"
+                  {
+    NodeAttr attr=NodeAttr(OP_OR);
+    Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
+    node->seq=parse_tree.node_seq++;
+    node->addChild(yyvsp[-2]);
+    node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
+    yyval=node;
+}
+#line 2164 "src/main.tab.cpp"
+    break;
+
   case 55:
-#line 441 "src/main.y"
+#line 456 "src/main.y"
                   {
     NodeAttr attr=NodeAttr(OP_OPPSITE);
     Node* node=new Node(yyvsp[0]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[0]);
-    yyval=node;
-}
-#line 2163 "src/main.tab.cpp"
-    break;
-
-  case 56:
-#line 449 "src/main.y"
-                  {
-    NodeAttr attr=NodeAttr(OP_LE);
-    Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
-    node->seq=tree::node_seq++;
     parse_tree.type_check(node);
-    node->addChild(yyvsp[-2]);
-    node->addChild(yyvsp[0]);
     yyval=node;
 }
 #line 2177 "src/main.tab.cpp"
     break;
 
-  case 57:
-#line 458 "src/main.y"
+  case 56:
+#line 464 "src/main.y"
                   {
-    NodeAttr attr=NodeAttr(OP_GE);
+    NodeAttr attr=NodeAttr(OP_LE);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
 #line 2191 "src/main.tab.cpp"
     break;
 
-  case 58:
-#line 467 "src/main.y"
+  case 57:
+#line 473 "src/main.y"
                   {
-    NodeAttr attr=NodeAttr(OP_NZ);
+    NodeAttr attr=NodeAttr(OP_GE);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
 #line 2205 "src/main.tab.cpp"
     break;
 
-  case 59:
-#line 476 "src/main.y"
+  case 58:
+#line 482 "src/main.y"
                   {
-    NodeAttr attr=NodeAttr(OP_GT);
+    NodeAttr attr=NodeAttr(OP_NZ);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
 #line 2219 "src/main.tab.cpp"
     break;
 
-  case 60:
-#line 485 "src/main.y"
+  case 59:
+#line 491 "src/main.y"
                   {
-    NodeAttr attr=NodeAttr(OP_LT);
+    NodeAttr attr=NodeAttr(OP_GT);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
 #line 2233 "src/main.tab.cpp"
     break;
 
-  case 61:
-#line 494 "src/main.y"
+  case 60:
+#line 500 "src/main.y"
                   {
-    NodeAttr attr=NodeAttr(OP_EQ);
+    NodeAttr attr=NodeAttr(OP_LT);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
 #line 2247 "src/main.tab.cpp"
     break;
 
+  case 61:
+#line 509 "src/main.y"
+                  {
+    NodeAttr attr=NodeAttr(OP_EQ);
+    Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
+    node->seq=parse_tree.node_seq++;
+    node->addChild(yyvsp[-2]);
+    node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
+    yyval=node;
+}
+#line 2261 "src/main.tab.cpp"
+    break;
+
   case 62:
-#line 503 "src/main.y"
+#line 518 "src/main.y"
                     {yyval=yyvsp[-2];}
-#line 2253 "src/main.tab.cpp"
+#line 2267 "src/main.tab.cpp"
     break;
 
   case 63:
-#line 504 "src/main.y"
+#line 519 "src/main.y"
                 {
     NodeAttr attr=NodeAttr(OP_MINUS);
     Node* node=new Node(yyvsp[0]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[0]->type);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 2266 "src/main.tab.cpp"
+#line 2280 "src/main.tab.cpp"
     break;
 
   case 64:
-#line 512 "src/main.y"
+#line 527 "src/main.y"
                {
     NodeAttr attr=NodeAttr(OP_PLUS);
     Node* node=new Node(yyvsp[0]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[0]->type);
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
+    node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[0]);
+    parse_tree.type_check(node);
     yyval=node;
 }
-#line 2279 "src/main.tab.cpp"
+#line 2293 "src/main.tab.cpp"
     break;
 
 
-#line 2283 "src/main.tab.cpp"
+#line 2297 "src/main.tab.cpp"
 
       default: break;
     }
@@ -2511,7 +2525,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 522 "src/main.y"
+#line 537 "src/main.y"
 
 
 int yyerror(char const* message)
