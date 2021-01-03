@@ -12,6 +12,7 @@ using std::unordered_map;
 #define YYSTYPE Node *
 
 #include "./tree.h"
+#include "./symbol.h"
 #include "./main.tab.h"
 
 #endif

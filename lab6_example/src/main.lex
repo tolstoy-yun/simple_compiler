@@ -5,7 +5,7 @@
 #include<string.h>
 extern symbol_table symtbl;
 int lineno=1;
-extern parse_tree;
+extern tree parse_tree;
 extern int scope; //记录当前所处的作用域域的标号
 extern int symbolNum; //记录当前记录到第几个符号
 extern stack<Node*> currentScope; //栈中记录当前作用域的变量
@@ -24,7 +24,6 @@ STRING \".+\"
 
 IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 IDQuote \&[[:alpha:]_][[:alpha:][:digit:]_]*
-IDPointer \*[[:alpha:]_][[:alpha:][:digit:]_]*
 
 LBRACE \{
 RBRACE \}
@@ -71,12 +70,13 @@ RBRACE \}
 ";" return SEMICOLON;
 "(" return LPAREN;
 ")" return RPAREN;
+"&" return QUOTE;
 
 {INTEGER} {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Integer);
     node->attr.vali = atoi(yytext);
-    node->seq=tree::node_seq++;
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
     yylval = node;
     return INTEGER;
@@ -85,7 +85,7 @@ RBRACE \}
 {CHAR} {
     NodeAttr attr=NodeAttr(yytext[1]);
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Char);
-    node->seq=tree::node_seq++;
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
     yylval = node;
     return CHAR;
@@ -94,7 +94,7 @@ RBRACE \}
 {STRING} {
     NodeAttr attr=NodeAttr(yytext[1]);
     Node* node = new Node(lineno,NODE_CONST,-1,attr,String);
-    node->seq=tree::node_seq++;
+    node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
     yylval=node;
     return STRING;
@@ -103,8 +103,8 @@ RBRACE \}
 {IDENTIFIER} {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_VAR,VAR_COMMON,attr,Notype);
-    node->attr.var_name=string(yytext)
-    node->seq=tree::node_seq++;
+    node->attr.var_name=string(yytext);
+    node->seq=parse_tree.node_seq++;
     node->firstScope=scope; //初始域号=当前域号
     /*遍历栈，判断是否有小于其起始域且var_name相同的符号
     * 如果有，则当前结点的序号=那个结点的序号，退出遍历
@@ -115,7 +115,7 @@ RBRACE \}
         tempNode=currentScope.top();
         currentScope.pop();
         tempStack.push(tempNode);
-        if(node->var_name.compare(tempNode->attr.var_name)==0 && node->firstScope>=tempNode->firstScope){
+        if(node->attr.var_name.compare(tempNode->attr.var_name)==0 && node->firstScope>=tempNode->firstScope){
             if(node->firstScope==tempNode->firstScope){
                 //如果相同的作用域内存在相同的符号，则将当前符号的疑似重定义位置1
                 node->suspected_redefine=1;
@@ -132,21 +132,6 @@ RBRACE \}
     parse_tree.type_check(node);
     yylval = node;
     return IDENTIFIER;
-}
-
-{IDQuote} {
-    NodeAttr attr=NodeAttr(string(yytext));
-    string str=string(yytext);
-    str.erase(str.begin());
-    Node* node=new Node(lineno,NODE_VAR,VAR_QUOTE,attr,Notype);
-    node->attr.var_name=str;
-    node->seq=tree::node_seq++;
-    parse_tree.type_check(node);
-    //将&n的类型设为与n一致
-    int n_pos=symtbl.lookup(node->var_name);
-    node->type=symtbl.get_type(n_pos);
-    yylval=node;
-    return IDQuote;
 }
 
 {LBRACE} {

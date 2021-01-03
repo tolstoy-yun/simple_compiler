@@ -1,6 +1,8 @@
 #ifndef TREE_H
 #define TREE_H
 
+#include "pch.h"
+#include "symbol.h"
 enum NodeType
 {
     NODE_CONST, 
@@ -41,18 +43,12 @@ enum OperatorType
     OP_OR,    // ||
     OP_OPPSITE, // !
     OP_ASSIGN,  // =
-    OP_IAND,    // &
     OP_PLUS_ASSIGN, // +=
     OP_MINUS_ASSIGN, // -=
     OP_INC,    // ++
     OP_DEC    // --
 }
 ;
-
-enum
-{
-	VAR_DECL = 0,
-};
 
 enum
 {
@@ -72,8 +68,6 @@ enum ExprType{
 
 enum VarType{
     VAR_COMMON, //一般的变量
-    VAR_QUOTE, //引用
-    VAR_POINTER //指针
 }
 ;
 

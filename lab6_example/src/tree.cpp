@@ -10,7 +10,7 @@ extern int lineno;
 extern symbol_table symtbl;
 extern int scope; //记录当前所处的作用域的标号
 extern int symbolNum; //记录当前记录到第几个符号
-extern stack<TreeNode*> currentScope; //栈中记录当前作用域的变量
+extern stack<Node*> currentScope; //栈中记录当前作用域的变量
 
 tree parse_tree;
 
@@ -85,14 +85,14 @@ void tree::type_check(Node *t)
 					break;
 				case STMT_FOR:
 					//第二个孩子要是boolean类型的
-					if(t->children->sibling!= Boolean)
+					if(t->children->sibling->type!= Boolean)
 					{
 						cerr <<"[line " <<t->lineno<<"]：Bad boolean type." << endl;
 						exit(1);
 					}
 					break;
 				case STMT_IF_ELSE:
-					if(t->children!=Boolean)
+					if(t->children->type!=Boolean)
 					{
 						cerr <<"[line " <<t->lineno<<"]：Bad boolean type." << endl;
 						exit(1);
@@ -112,13 +112,6 @@ void tree::type_check(Node *t)
 			switch(t->kind_kind){
 				case VAR_COMMON:
 					break;
-				case VAR_QUOTE:
-					//引用的符号必须存在
-					if(symtbl.lookup(t->attr.var_name)==-1){
-						cerr <<"[line " <<t->lineno<<"]：The referenced symbol does not exist." << endl;
-						exit(1);
-					}
-					break;
 				default:
 					cerr <<"[line " <<t->lineno<<"]：Bad type." << endl;
 					exit(1);
@@ -127,10 +120,10 @@ void tree::type_check(Node *t)
 		case NODE_EXPR:
 			if(t->kind_kind==EXPR_OP)
 			{
-				switch(op)
+				switch(t->attr->op)
 				{	
 					//+=，两个操作数可以都为int，都为char，一个是int，一个是char
-					case LOP_PLUS_ASSIGN:
+					case OP_PLUS_ASSIGN:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -140,7 +133,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//-=，两个操作数可以都为int，都为char，一个是int，一个是char
-					case LOP_MINUS_ASSIGN:
+					case OP_MINUS_ASSIGN:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -150,7 +143,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//=，赋值，两个操作数可以都为int，都为char，一个是int，一个是char
-					case LOP_ASSIGN:
+					case OP_ASSIGN:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -160,7 +153,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//+，加，两个操作数可以都为int，都为char，一个是int，一个是char
-					case LOP_PLUS:
+					case OP_PLUS:
 						//加运算
 						if(t->children->sibling!=nullptr){
 							if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
@@ -182,7 +175,7 @@ void tree::type_check(Node *t)
 						}
 						
 					//-，减，两个操作数可以都为int，都为char，一个是int，一个是char
-					case LOP_MINUS:
+					case OP_MINUS:
 						//减运算
 						if(t->children->sibling!=nullptr){
 							if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
@@ -204,7 +197,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//*，乘，同上
-					case LOP_MUL:
+					case OP_MUL:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -213,7 +206,7 @@ void tree::type_check(Node *t)
 							exit(1);
 						}
 						break;
-					case LOP_DIV:
+					case OP_DIV:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -222,7 +215,7 @@ void tree::type_check(Node *t)
 							exit(1);
 						}
 						break;
-					case LOP_MOD:
+					case OP_MOD:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -232,42 +225,42 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//++，其孩子节点需要为int或char
-					case LOP_INC:
-						if(t->children->type!=Integer && t->children!=Char){
+					case OP_INC:
+						if(t->children->type!=Integer && t->children->type!=Char){
 							cerr <<"[line " <<t->lineno<<"]：Bad \"++\" type." << endl;
 							exit(1);
 						}
 						break;
 					//--
-					case LOP_DEC:
-						if(t->children->type!=Integer && t->children!=Char){
+					case OP_DEC:
+						if(t->children->type!=Integer && t->children->type!=Char){
 							cerr <<"[line " <<t->lineno<<"]：Bad \"--\" type." << endl;
 							exit(1);
 						}
 						break;
 					//&&，两个孩子都要是boolean
-					case LOP_AND:
+					case OP_AND:
 						if(t->children->type!=Boolean || t->children->sibling->type!=Boolean){
 							cerr <<"[line " <<t->lineno<<"]：Bad \"&&\" type." << endl;
 							exit(1);
 						}
 						break;
 					// ||
-					case LOP_OR:
+					case OP_OR:
 						if(t->children->type!=Boolean || t->children->sibling->type!=Boolean){
 							cerr <<"[line " <<t->lineno<<"]：Bad \"||\" type." << endl;
 							exit(1);
 						}
 						break;
 					// !
-					case LOP_OPPSITE:
+					case OP_OPPSITE:
 						if(t->children->type!=Boolean){
 							cerr <<"[line " <<t->lineno<<"]：Bad \"!\" type." << endl;
 							exit(1);
 						}
 						break;
 					//<=，两个操作数可以都为int，都为char，一个是int，一个是char
-					case LOP_LE:
+					case OP_LE:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -277,7 +270,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//>=，两个操作数可以都为int，都为char，一个是int，一个是char
-					case LOP_GE:
+					case OP_GE:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -287,7 +280,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//!=
-					case LOP_NZ:
+					case OP_NZ:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -297,7 +290,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//>
-					case LOP_GT:
+					case OP_GT:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -307,7 +300,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//<
-					case LOP_LT:
+					case OP_LT:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -317,7 +310,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					//==
-					case LOP_EQ:
+					case OP_EQ:
 						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
 							break;
 						}
@@ -336,7 +329,6 @@ void tree::type_check(Node *t)
 		//函数，返回值报错
 		case NODE_FUNC:
 			Node* temp=t->children;
-			Node* re=nullptr;//用来存放return节点
 			//遍历函数的孩子节点，找到statement对应的结点
 			while(temp){
 				//在statement节点的孩子节点中找到return语句
@@ -359,23 +351,24 @@ void tree::type_check(Node *t)
 		default:
 			cerr <<"[line " <<t->lineno<<"]：Bad type." << endl;
 			exit(1);
+			break;
 	}
 	return;
 }
 
 void tree::get_temp_var(Node *t)
 {
-	if (t->kind != EXPR_NODE)
+	if (t->kind != NODE_EXPR)
 		return;
-	if (t->attr.op < PLUS || t->attr.op > OVER)
+	if (t->attr.op < OP_PLUS || t->attr.op > OVER)
 		return;
 
-	Node *arg1 = t->children[0];
-	Node *arg2 = t->children[1];
+	Node *arg1 = t->children;
+	Node *arg2 = t->children->sibling;
 
-	if (arg1->kind_kind == OP_EXPR)
+	if (arg1->kind_kind == EXPR_OP)
 		temp_var_seq--;
-	if (arg2 && arg2->kind_kind == OP_EXPR)
+	if (arg2 && arg2->kind_kind == EXPR_OP)
 		tree::temp_var_seq--;
 	t->temp_var = tree::temp_var_seq;
 	tree::temp_var_seq++;
@@ -422,7 +415,7 @@ void tree::stmt_get_label(Node *t)
 {
 	switch (t->kind_kind)
 	{
-	case COMP_STMT:
+	case STMT_COMP:
 		{
 			Node *last;
 			Node *p;

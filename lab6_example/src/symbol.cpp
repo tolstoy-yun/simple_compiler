@@ -8,18 +8,18 @@ using namespace ::std;
 
 symbol_table symtbl;
 
-int symbol_table::lookup(string name)
+int symbol_table::lookup(string name,int number)
 {
 	for (int i = 0; i < size; i++)
-		if (table[i].name == name)
+		if (table[i].name == name && table[i].symbol_number==number)
 			return i;
-	return -1;
+	exit(1);
 }
 
 int symbol_table::insert(string name, int token)
 {
 	if (size >= MAX_ID)
-		return -1;
+		exit(1);
 	table[size].name = name;
 	table[size].token = token;
 	table[size].type = Notype;
@@ -27,16 +27,23 @@ int symbol_table::insert(string name, int token)
 	return size - 1;
 }
 
-int symbol_table::gettoken(string name)
+int symbol_table::gettoken(int pos)
 {
-	for (int i = 0; i < size; i++)
-		if (table[i].name == name)
-			return table[i].token;
-	return -1;
+	if (pos < 0 || pos >= size)
+	{
+		cerr << "Bad identifier" << endl;
+		exit(1);
+	}
+	return table[pos].token;
 }
 
 string& symbol_table::getname(int pos)
 {
+	if (pos < 0 || pos >= size)
+	{
+		cerr << "Bad identifier" << endl;
+		exit(1);
+	}
 	return table[pos].name;
 }
 
@@ -45,7 +52,7 @@ int symbol_table::set_type(int pos, int type)
 	if (pos < 0 || pos >= size)
 	{
 		cerr << "Bad identifier" << endl;
-		return -1;
+		exit(1);
 	}
 
 	table[pos].type = type;
@@ -57,7 +64,7 @@ int symbol_table::get_type(int pos)
 	if (pos < 0 || pos >= size)
 	{
 		cerr << "Bad identifier" << endl;
-		return -1;
+		exit(1);
 	}
 
 	return table[pos].type;

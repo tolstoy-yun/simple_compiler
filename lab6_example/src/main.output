@@ -1,0 +1,2811 @@
+Terminals unused in grammar
+
+    IDPointer
+    IDQuote
+    S_SKIP
+    BOOL
+    LOP_IAND
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: statements
+
+    2 statements: statement
+    3           | statements statement
+
+    4 statement: SEMICOLON
+    5          | declaration SEMICOLON
+    6          | LBRACE statements RBRACE
+    7          | if_stmt
+    8          | while_stmt
+    9          | for_stmt
+   10          | printf SEMICOLON
+   11          | scanf SEMICOLON
+   12          | expr SEMICOLON
+   13          | func
+   14          | return_stmt
+
+   15 return_stmt: S_RETURN expr SEMICOLON
+
+   16 declaration: T IDLIST
+
+   17 func: T IDENTIFIER LPAREN specialID RPAREN statement
+   18     | T IDENTIFIER LPAREN RPAREN statement
+
+   19 T: T_INT
+   20  | T_CHAR
+   21  | T_BOOL
+   22  | T_VOID
+   23  | T_STRING
+
+   24 IDLIST: IDLIST COMMA expr
+   25       | expr
+
+   26 for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statement
+   27         | S_FOR LPAREN declaration SEMICOLON expr SEMICOLON expr RPAREN statement
+
+   28 while_stmt: S_WHILE LPAREN expr RPAREN statement
+
+   29 if_stmt: S_IF LPAREN expr RPAREN statement
+   30        | S_IF LPAREN expr RPAREN statement S_ELSE statement
+
+   31 printf: P_PRINTF LPAREN STRING RPAREN
+   32       | P_PRINTF LPAREN STRING COMMA specialID RPAREN
+
+   33 scanf: P_SCANF LPAREN STRING COMMA specialID RPAREN
+
+   34 specialID: IDENTIFIER
+   35          | QUOTE IDENTIFIER
+   36          | specialID COMMA IDENTIFIER
+   37          | specialID COMMA QUOTE IDENTIFIER
+
+   38 expr: IDENTIFIER
+   39     | INTEGER
+   40     | CHAR
+   41     | STRING
+   42     | expr LOP_PLUS_ASSIGN expr
+   43     | expr LOP_MINUS_ASSIGN expr
+   44     | expr LOP_ASSIGN expr
+   45     | expr LOP_PLUS expr
+   46     | expr LOP_MINUS expr
+   47     | expr LOP_MUL expr
+   48     | expr LOP_DIV expr
+   49     | expr LOP_MOD expr
+   50     | expr LOP_INC
+   51     | expr LOP_DEC
+   52     | expr LOP_AND expr
+   53     | expr LOP_OR expr
+   54     | LOP_OPPSITE expr
+   55     | expr LOP_LE expr
+   56     | expr LOP_GE expr
+   57     | expr LOP_NZ expr
+   58     | expr LOP_GT expr
+   59     | expr LOP_LT expr
+   60     | expr LOP_EQ expr
+   61     | LPAREN expr RPAREN
+   62     | LOP_MINUS expr
+   63     | LOP_PLUS expr
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    T_CHAR (258) 20
+    T_INT (259) 19
+    T_STRING (260) 23
+    T_BOOL (261) 21
+    T_VOID (262) 22
+    IDPointer (263)
+    IDQuote (264)
+    S_FOR (265) 26 27
+    S_IF (266) 29 30
+    S_WHILE (267) 28
+    S_ELSE (268) 30
+    S_SKIP (269)
+    S_RETURN (270) 15
+    P_PRINTF (271) 31 32
+    P_SCANF (272) 33
+    LOP_ASSIGN (273) 44
+    LOP_PLUS (274) 45 63
+    LOP_MINUS (275) 46 62
+    LOP_MUL (276) 47
+    LOP_DIV (277) 48
+    LOP_MOD (278) 49
+    LOP_INC (279) 50
+    LOP_DEC (280) 51
+    LOP_PLUS_ASSIGN (281) 42
+    LOP_MINUS_ASSIGN (282) 43
+    LOP_AND (283) 52
+    LOP_OR (284) 53
+    LOP_OPPSITE (285) 54
+    LOP_LE (286) 55
+    LOP_GE (287) 56
+    LOP_NZ (288) 57
+    LOP_GT (289) 58
+    LOP_LT (290) 59
+    LOP_EQ (291) 60
+    SEMICOLON (292) 4 5 10 11 12 15 26 27
+    COMMA (293) 24 32 33 36 37
+    LPAREN (294) 17 18 26 27 28 29 30 31 32 33 61
+    RPAREN (295) 17 18 26 27 28 29 30 31 32 33 61
+    LBRACE (296) 6
+    RBRACE (297) 6
+    QUOTE (298) 35 37
+    IDENTIFIER (299) 17 18 34 35 36 37 38
+    INTEGER (300) 39
+    CHAR (301) 40
+    BOOL (302)
+    STRING (303) 31 32 33 41
+    LOP_IAND (304)
+    LOWER_THAN_ELSE (305)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (51)
+        on left: 0
+    program (52)
+        on left: 1
+        on right: 0
+    statements (53)
+        on left: 2 3
+        on right: 1 3 6
+    statement (54)
+        on left: 4 5 6 7 8 9 10 11 12 13 14
+        on right: 2 3 17 18 26 27 28 29 30
+    return_stmt (55)
+        on left: 15
+        on right: 14
+    declaration (56)
+        on left: 16
+        on right: 5 27
+    func (57)
+        on left: 17 18
+        on right: 13
+    T (58)
+        on left: 19 20 21 22 23
+        on right: 16 17 18
+    IDLIST (59)
+        on left: 24 25
+        on right: 16 24
+    for_stmt (60)
+        on left: 26 27
+        on right: 9
+    while_stmt (61)
+        on left: 28
+        on right: 8
+    if_stmt (62)
+        on left: 29 30
+        on right: 7
+    printf (63)
+        on left: 31 32
+        on right: 10
+    scanf (64)
+        on left: 33
+        on right: 11
+    specialID (65)
+        on left: 34 35 36 37
+        on right: 17 32 33 36 37
+    expr (66)
+        on left: 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
+        on right: 12 15 24 25 26 27 28 29 30 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
+
+
+State 0
+
+    0 $accept: . program $end
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    program      go to state 22
+    statements   go to state 23
+    statement    go to state 24
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 1
+
+   20 T: T_CHAR .
+
+    $default  reduce using rule 20 (T)
+
+
+State 2
+
+   19 T: T_INT .
+
+    $default  reduce using rule 19 (T)
+
+
+State 3
+
+   23 T: T_STRING .
+
+    $default  reduce using rule 23 (T)
+
+
+State 4
+
+   21 T: T_BOOL .
+
+    $default  reduce using rule 21 (T)
+
+
+State 5
+
+   22 T: T_VOID .
+
+    $default  reduce using rule 22 (T)
+
+
+State 6
+
+   26 for_stmt: S_FOR . LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statement
+   27         | S_FOR . LPAREN declaration SEMICOLON expr SEMICOLON expr RPAREN statement
+
+    LPAREN  shift, and go to state 35
+
+
+State 7
+
+   29 if_stmt: S_IF . LPAREN expr RPAREN statement
+   30        | S_IF . LPAREN expr RPAREN statement S_ELSE statement
+
+    LPAREN  shift, and go to state 36
+
+
+State 8
+
+   28 while_stmt: S_WHILE . LPAREN expr RPAREN statement
+
+    LPAREN  shift, and go to state 37
+
+
+State 9
+
+   15 return_stmt: S_RETURN . expr SEMICOLON
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 38
+
+
+State 10
+
+   31 printf: P_PRINTF . LPAREN STRING RPAREN
+   32       | P_PRINTF . LPAREN STRING COMMA specialID RPAREN
+
+    LPAREN  shift, and go to state 39
+
+
+State 11
+
+   33 scanf: P_SCANF . LPAREN STRING COMMA specialID RPAREN
+
+    LPAREN  shift, and go to state 40
+
+
+State 12
+
+   63 expr: LOP_PLUS . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 41
+
+
+State 13
+
+   62 expr: LOP_MINUS . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 42
+
+
+State 14
+
+   54 expr: LOP_OPPSITE . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 43
+
+
+State 15
+
+    4 statement: SEMICOLON .
+
+    $default  reduce using rule 4 (statement)
+
+
+State 16
+
+   61 expr: LPAREN . expr RPAREN
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 44
+
+
+State 17
+
+    6 statement: LBRACE . statements RBRACE
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    statements   go to state 45
+    statement    go to state 24
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 18
+
+   38 expr: IDENTIFIER .
+
+    $default  reduce using rule 38 (expr)
+
+
+State 19
+
+   39 expr: INTEGER .
+
+    $default  reduce using rule 39 (expr)
+
+
+State 20
+
+   40 expr: CHAR .
+
+    $default  reduce using rule 40 (expr)
+
+
+State 21
+
+   41 expr: STRING .
+
+    $default  reduce using rule 41 (expr)
+
+
+State 22
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 46
+
+
+State 23
+
+    1 program: statements .
+    3 statements: statements . statement
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    $default  reduce using rule 1 (program)
+
+    statement    go to state 47
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 24
+
+    2 statements: statement .
+
+    $default  reduce using rule 2 (statements)
+
+
+State 25
+
+   14 statement: return_stmt .
+
+    $default  reduce using rule 14 (statement)
+
+
+State 26
+
+    5 statement: declaration . SEMICOLON
+
+    SEMICOLON  shift, and go to state 48
+
+
+State 27
+
+   13 statement: func .
+
+    $default  reduce using rule 13 (statement)
+
+
+State 28
+
+   16 declaration: T . IDLIST
+   17 func: T . IDENTIFIER LPAREN specialID RPAREN statement
+   18     | T . IDENTIFIER LPAREN RPAREN statement
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 49
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    IDLIST  go to state 50
+    expr    go to state 51
+
+
+State 29
+
+    9 statement: for_stmt .
+
+    $default  reduce using rule 9 (statement)
+
+
+State 30
+
+    8 statement: while_stmt .
+
+    $default  reduce using rule 8 (statement)
+
+
+State 31
+
+    7 statement: if_stmt .
+
+    $default  reduce using rule 7 (statement)
+
+
+State 32
+
+   10 statement: printf . SEMICOLON
+
+    SEMICOLON  shift, and go to state 52
+
+
+State 33
+
+   11 statement: scanf . SEMICOLON
+
+    SEMICOLON  shift, and go to state 53
+
+
+State 34
+
+   12 statement: expr . SEMICOLON
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    SEMICOLON         shift, and go to state 72
+
+
+State 35
+
+   26 for_stmt: S_FOR LPAREN . expr SEMICOLON expr SEMICOLON expr RPAREN statement
+   27         | S_FOR LPAREN . declaration SEMICOLON expr SEMICOLON expr RPAREN statement
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    declaration  go to state 73
+    T            go to state 74
+    expr         go to state 75
+
+
+State 36
+
+   29 if_stmt: S_IF LPAREN . expr RPAREN statement
+   30        | S_IF LPAREN . expr RPAREN statement S_ELSE statement
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 76
+
+
+State 37
+
+   28 while_stmt: S_WHILE LPAREN . expr RPAREN statement
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 77
+
+
+State 38
+
+   15 return_stmt: S_RETURN expr . SEMICOLON
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    SEMICOLON         shift, and go to state 78
+
+
+State 39
+
+   31 printf: P_PRINTF LPAREN . STRING RPAREN
+   32       | P_PRINTF LPAREN . STRING COMMA specialID RPAREN
+
+    STRING  shift, and go to state 79
+
+
+State 40
+
+   33 scanf: P_SCANF LPAREN . STRING COMMA specialID RPAREN
+
+    STRING  shift, and go to state 80
+
+
+State 41
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+   63     | LOP_PLUS expr .
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 63 (expr)
+
+
+State 42
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+   62     | LOP_MINUS expr .
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 62 (expr)
+
+
+State 43
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   54     | LOP_OPPSITE expr .
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    $default  reduce using rule 54 (expr)
+
+
+State 44
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+   61     | LPAREN expr . RPAREN
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    RPAREN            shift, and go to state 81
+
+
+State 45
+
+    3 statements: statements . statement
+    6 statement: LBRACE statements . RBRACE
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    RBRACE       shift, and go to state 82
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    statement    go to state 47
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 46
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 47
+
+    3 statements: statements statement .
+
+    $default  reduce using rule 3 (statements)
+
+
+State 48
+
+    5 statement: declaration SEMICOLON .
+
+    $default  reduce using rule 5 (statement)
+
+
+State 49
+
+   17 func: T IDENTIFIER . LPAREN specialID RPAREN statement
+   18     | T IDENTIFIER . LPAREN RPAREN statement
+   38 expr: IDENTIFIER .
+
+    LPAREN  shift, and go to state 83
+
+    $default  reduce using rule 38 (expr)
+
+
+State 50
+
+   16 declaration: T IDLIST .
+   24 IDLIST: IDLIST . COMMA expr
+
+    COMMA  shift, and go to state 84
+
+    $default  reduce using rule 16 (declaration)
+
+
+State 51
+
+   25 IDLIST: expr .
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+
+    $default  reduce using rule 25 (IDLIST)
+
+
+State 52
+
+   10 statement: printf SEMICOLON .
+
+    $default  reduce using rule 10 (statement)
+
+
+State 53
+
+   11 statement: scanf SEMICOLON .
+
+    $default  reduce using rule 11 (statement)
+
+
+State 54
+
+   44 expr: expr LOP_ASSIGN . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 85
+
+
+State 55
+
+   45 expr: expr LOP_PLUS . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 86
+
+
+State 56
+
+   46 expr: expr LOP_MINUS . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 87
+
+
+State 57
+
+   47 expr: expr LOP_MUL . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 88
+
+
+State 58
+
+   48 expr: expr LOP_DIV . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 89
+
+
+State 59
+
+   49 expr: expr LOP_MOD . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 90
+
+
+State 60
+
+   50 expr: expr LOP_INC .
+
+    $default  reduce using rule 50 (expr)
+
+
+State 61
+
+   51 expr: expr LOP_DEC .
+
+    $default  reduce using rule 51 (expr)
+
+
+State 62
+
+   42 expr: expr LOP_PLUS_ASSIGN . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 91
+
+
+State 63
+
+   43 expr: expr LOP_MINUS_ASSIGN . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 92
+
+
+State 64
+
+   52 expr: expr LOP_AND . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 93
+
+
+State 65
+
+   53 expr: expr LOP_OR . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 94
+
+
+State 66
+
+   55 expr: expr LOP_LE . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 95
+
+
+State 67
+
+   56 expr: expr LOP_GE . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 96
+
+
+State 68
+
+   57 expr: expr LOP_NZ . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 97
+
+
+State 69
+
+   58 expr: expr LOP_GT . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 98
+
+
+State 70
+
+   59 expr: expr LOP_LT . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 99
+
+
+State 71
+
+   60 expr: expr LOP_EQ . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 100
+
+
+State 72
+
+   12 statement: expr SEMICOLON .
+
+    $default  reduce using rule 12 (statement)
+
+
+State 73
+
+   27 for_stmt: S_FOR LPAREN declaration . SEMICOLON expr SEMICOLON expr RPAREN statement
+
+    SEMICOLON  shift, and go to state 101
+
+
+State 74
+
+   16 declaration: T . IDLIST
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    IDLIST  go to state 50
+    expr    go to state 51
+
+
+State 75
+
+   26 for_stmt: S_FOR LPAREN expr . SEMICOLON expr SEMICOLON expr RPAREN statement
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    SEMICOLON         shift, and go to state 102
+
+
+State 76
+
+   29 if_stmt: S_IF LPAREN expr . RPAREN statement
+   30        | S_IF LPAREN expr . RPAREN statement S_ELSE statement
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    RPAREN            shift, and go to state 103
+
+
+State 77
+
+   28 while_stmt: S_WHILE LPAREN expr . RPAREN statement
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    RPAREN            shift, and go to state 104
+
+
+State 78
+
+   15 return_stmt: S_RETURN expr SEMICOLON .
+
+    $default  reduce using rule 15 (return_stmt)
+
+
+State 79
+
+   31 printf: P_PRINTF LPAREN STRING . RPAREN
+   32       | P_PRINTF LPAREN STRING . COMMA specialID RPAREN
+
+    COMMA   shift, and go to state 105
+    RPAREN  shift, and go to state 106
+
+
+State 80
+
+   33 scanf: P_SCANF LPAREN STRING . COMMA specialID RPAREN
+
+    COMMA  shift, and go to state 107
+
+
+State 81
+
+   61 expr: LPAREN expr RPAREN .
+
+    $default  reduce using rule 61 (expr)
+
+
+State 82
+
+    6 statement: LBRACE statements RBRACE .
+
+    $default  reduce using rule 6 (statement)
+
+
+State 83
+
+   17 func: T IDENTIFIER LPAREN . specialID RPAREN statement
+   18     | T IDENTIFIER LPAREN . RPAREN statement
+
+    RPAREN      shift, and go to state 108
+    QUOTE       shift, and go to state 109
+    IDENTIFIER  shift, and go to state 110
+
+    specialID  go to state 111
+
+
+State 84
+
+   24 IDLIST: IDLIST COMMA . expr
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 112
+
+
+State 85
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   44     | expr LOP_ASSIGN expr .
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN  shift, and go to state 54
+    LOP_INC     shift, and go to state 60
+    LOP_DEC     shift, and go to state 61
+
+    $default  reduce using rule 44 (expr)
+
+
+State 86
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   45     | expr LOP_PLUS expr .
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 45 (expr)
+
+
+State 87
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   46     | expr LOP_MINUS expr .
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 46 (expr)
+
+
+State 88
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   47     | expr LOP_MUL expr .
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 47 (expr)
+
+
+State 89
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   48     | expr LOP_DIV expr .
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 48 (expr)
+
+
+State 90
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   49     | expr LOP_MOD expr .
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 49 (expr)
+
+
+State 91
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   42     | expr LOP_PLUS_ASSIGN expr .
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN  shift, and go to state 54
+    LOP_INC     shift, and go to state 60
+    LOP_DEC     shift, and go to state 61
+
+    $default  reduce using rule 42 (expr)
+
+
+State 92
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   43     | expr LOP_MINUS_ASSIGN expr .
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN  shift, and go to state 54
+    LOP_INC     shift, and go to state 60
+    LOP_DEC     shift, and go to state 61
+
+    $default  reduce using rule 43 (expr)
+
+
+State 93
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   52     | expr LOP_AND expr .
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+
+    $default  reduce using rule 52 (expr)
+
+
+State 94
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   53     | expr LOP_OR expr .
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+
+    $default  reduce using rule 53 (expr)
+
+
+State 95
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   55     | expr LOP_LE expr .
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 55 (expr)
+
+
+State 96
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   56     | expr LOP_GE expr .
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 56 (expr)
+
+
+State 97
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   57     | expr LOP_NZ expr .
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+
+    $default  reduce using rule 57 (expr)
+
+
+State 98
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   58     | expr LOP_GT expr .
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 58 (expr)
+
+
+State 99
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   59     | expr LOP_LT expr .
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+
+    $default  reduce using rule 59 (expr)
+
+
+State 100
+
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+   60     | expr LOP_EQ expr .
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+
+    $default  reduce using rule 60 (expr)
+
+
+State 101
+
+   27 for_stmt: S_FOR LPAREN declaration SEMICOLON . expr SEMICOLON expr RPAREN statement
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 113
+
+
+State 102
+
+   26 for_stmt: S_FOR LPAREN expr SEMICOLON . expr SEMICOLON expr RPAREN statement
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 114
+
+
+State 103
+
+   29 if_stmt: S_IF LPAREN expr RPAREN . statement
+   30        | S_IF LPAREN expr RPAREN . statement S_ELSE statement
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    statement    go to state 115
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 104
+
+   28 while_stmt: S_WHILE LPAREN expr RPAREN . statement
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    statement    go to state 116
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 105
+
+   32 printf: P_PRINTF LPAREN STRING COMMA . specialID RPAREN
+
+    QUOTE       shift, and go to state 109
+    IDENTIFIER  shift, and go to state 110
+
+    specialID  go to state 117
+
+
+State 106
+
+   31 printf: P_PRINTF LPAREN STRING RPAREN .
+
+    $default  reduce using rule 31 (printf)
+
+
+State 107
+
+   33 scanf: P_SCANF LPAREN STRING COMMA . specialID RPAREN
+
+    QUOTE       shift, and go to state 109
+    IDENTIFIER  shift, and go to state 110
+
+    specialID  go to state 118
+
+
+State 108
+
+   18 func: T IDENTIFIER LPAREN RPAREN . statement
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    statement    go to state 119
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 109
+
+   35 specialID: QUOTE . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 120
+
+
+State 110
+
+   34 specialID: IDENTIFIER .
+
+    $default  reduce using rule 34 (specialID)
+
+
+State 111
+
+   17 func: T IDENTIFIER LPAREN specialID . RPAREN statement
+   36 specialID: specialID . COMMA IDENTIFIER
+   37          | specialID . COMMA QUOTE IDENTIFIER
+
+    COMMA   shift, and go to state 121
+    RPAREN  shift, and go to state 122
+
+
+State 112
+
+   24 IDLIST: IDLIST COMMA expr .
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+
+    $default  reduce using rule 24 (IDLIST)
+
+
+State 113
+
+   27 for_stmt: S_FOR LPAREN declaration SEMICOLON expr . SEMICOLON expr RPAREN statement
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    SEMICOLON         shift, and go to state 123
+
+
+State 114
+
+   26 for_stmt: S_FOR LPAREN expr SEMICOLON expr . SEMICOLON expr RPAREN statement
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    SEMICOLON         shift, and go to state 124
+
+
+State 115
+
+   29 if_stmt: S_IF LPAREN expr RPAREN statement .
+   30        | S_IF LPAREN expr RPAREN statement . S_ELSE statement
+
+    S_ELSE  shift, and go to state 125
+
+    $default  reduce using rule 29 (if_stmt)
+
+
+State 116
+
+   28 while_stmt: S_WHILE LPAREN expr RPAREN statement .
+
+    $default  reduce using rule 28 (while_stmt)
+
+
+State 117
+
+   32 printf: P_PRINTF LPAREN STRING COMMA specialID . RPAREN
+   36 specialID: specialID . COMMA IDENTIFIER
+   37          | specialID . COMMA QUOTE IDENTIFIER
+
+    COMMA   shift, and go to state 121
+    RPAREN  shift, and go to state 126
+
+
+State 118
+
+   33 scanf: P_SCANF LPAREN STRING COMMA specialID . RPAREN
+   36 specialID: specialID . COMMA IDENTIFIER
+   37          | specialID . COMMA QUOTE IDENTIFIER
+
+    COMMA   shift, and go to state 121
+    RPAREN  shift, and go to state 127
+
+
+State 119
+
+   18 func: T IDENTIFIER LPAREN RPAREN statement .
+
+    $default  reduce using rule 18 (func)
+
+
+State 120
+
+   35 specialID: QUOTE IDENTIFIER .
+
+    $default  reduce using rule 35 (specialID)
+
+
+State 121
+
+   36 specialID: specialID COMMA . IDENTIFIER
+   37          | specialID COMMA . QUOTE IDENTIFIER
+
+    QUOTE       shift, and go to state 128
+    IDENTIFIER  shift, and go to state 129
+
+
+State 122
+
+   17 func: T IDENTIFIER LPAREN specialID RPAREN . statement
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    statement    go to state 130
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 123
+
+   27 for_stmt: S_FOR LPAREN declaration SEMICOLON expr SEMICOLON . expr RPAREN statement
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 131
+
+
+State 124
+
+   26 for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON . expr RPAREN statement
+
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    LPAREN       shift, and go to state 16
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    expr  go to state 132
+
+
+State 125
+
+   30 if_stmt: S_IF LPAREN expr RPAREN statement S_ELSE . statement
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    statement    go to state 133
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 126
+
+   32 printf: P_PRINTF LPAREN STRING COMMA specialID RPAREN .
+
+    $default  reduce using rule 32 (printf)
+
+
+State 127
+
+   33 scanf: P_SCANF LPAREN STRING COMMA specialID RPAREN .
+
+    $default  reduce using rule 33 (scanf)
+
+
+State 128
+
+   37 specialID: specialID COMMA QUOTE . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 134
+
+
+State 129
+
+   36 specialID: specialID COMMA IDENTIFIER .
+
+    $default  reduce using rule 36 (specialID)
+
+
+State 130
+
+   17 func: T IDENTIFIER LPAREN specialID RPAREN statement .
+
+    $default  reduce using rule 17 (func)
+
+
+State 131
+
+   27 for_stmt: S_FOR LPAREN declaration SEMICOLON expr SEMICOLON expr . RPAREN statement
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    RPAREN            shift, and go to state 135
+
+
+State 132
+
+   26 for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr . RPAREN statement
+   42 expr: expr . LOP_PLUS_ASSIGN expr
+   43     | expr . LOP_MINUS_ASSIGN expr
+   44     | expr . LOP_ASSIGN expr
+   45     | expr . LOP_PLUS expr
+   46     | expr . LOP_MINUS expr
+   47     | expr . LOP_MUL expr
+   48     | expr . LOP_DIV expr
+   49     | expr . LOP_MOD expr
+   50     | expr . LOP_INC
+   51     | expr . LOP_DEC
+   52     | expr . LOP_AND expr
+   53     | expr . LOP_OR expr
+   55     | expr . LOP_LE expr
+   56     | expr . LOP_GE expr
+   57     | expr . LOP_NZ expr
+   58     | expr . LOP_GT expr
+   59     | expr . LOP_LT expr
+   60     | expr . LOP_EQ expr
+
+    LOP_ASSIGN        shift, and go to state 54
+    LOP_PLUS          shift, and go to state 55
+    LOP_MINUS         shift, and go to state 56
+    LOP_MUL           shift, and go to state 57
+    LOP_DIV           shift, and go to state 58
+    LOP_MOD           shift, and go to state 59
+    LOP_INC           shift, and go to state 60
+    LOP_DEC           shift, and go to state 61
+    LOP_PLUS_ASSIGN   shift, and go to state 62
+    LOP_MINUS_ASSIGN  shift, and go to state 63
+    LOP_AND           shift, and go to state 64
+    LOP_OR            shift, and go to state 65
+    LOP_LE            shift, and go to state 66
+    LOP_GE            shift, and go to state 67
+    LOP_NZ            shift, and go to state 68
+    LOP_GT            shift, and go to state 69
+    LOP_LT            shift, and go to state 70
+    LOP_EQ            shift, and go to state 71
+    RPAREN            shift, and go to state 136
+
+
+State 133
+
+   30 if_stmt: S_IF LPAREN expr RPAREN statement S_ELSE statement .
+
+    $default  reduce using rule 30 (if_stmt)
+
+
+State 134
+
+   37 specialID: specialID COMMA QUOTE IDENTIFIER .
+
+    $default  reduce using rule 37 (specialID)
+
+
+State 135
+
+   27 for_stmt: S_FOR LPAREN declaration SEMICOLON expr SEMICOLON expr RPAREN . statement
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    statement    go to state 137
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 136
+
+   26 for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN . statement
+
+    T_CHAR       shift, and go to state 1
+    T_INT        shift, and go to state 2
+    T_STRING     shift, and go to state 3
+    T_BOOL       shift, and go to state 4
+    T_VOID       shift, and go to state 5
+    S_FOR        shift, and go to state 6
+    S_IF         shift, and go to state 7
+    S_WHILE      shift, and go to state 8
+    S_RETURN     shift, and go to state 9
+    P_PRINTF     shift, and go to state 10
+    P_SCANF      shift, and go to state 11
+    LOP_PLUS     shift, and go to state 12
+    LOP_MINUS    shift, and go to state 13
+    LOP_OPPSITE  shift, and go to state 14
+    SEMICOLON    shift, and go to state 15
+    LPAREN       shift, and go to state 16
+    LBRACE       shift, and go to state 17
+    IDENTIFIER   shift, and go to state 18
+    INTEGER      shift, and go to state 19
+    CHAR         shift, and go to state 20
+    STRING       shift, and go to state 21
+
+    statement    go to state 138
+    return_stmt  go to state 25
+    declaration  go to state 26
+    func         go to state 27
+    T            go to state 28
+    for_stmt     go to state 29
+    while_stmt   go to state 30
+    if_stmt      go to state 31
+    printf       go to state 32
+    scanf        go to state 33
+    expr         go to state 34
+
+
+State 137
+
+   27 for_stmt: S_FOR LPAREN declaration SEMICOLON expr SEMICOLON expr RPAREN statement .
+
+    $default  reduce using rule 27 (for_stmt)
+
+
+State 138
+
+   26 for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statement .
+
+    $default  reduce using rule 26 (for_stmt)
