@@ -273,7 +273,7 @@ while_stmt: S_WHILE LPAREN expr RPAREN statement {
 
 if_stmt: S_IF LPAREN expr RPAREN statement %prec LOWER_THAN_ELSE{
     NodeAttr attr=NodeAttr();
-    Node* node=new Node($3->lineno,NODE_STMT,STMT_IF_ELSE,attr,Notype);
+    Node* node=new Node($3->lineno,NODE_STMT,STMT_IF,attr,Notype);
     node->seq=parse_tree.node_seq++;
     node->addChild($3);
     node->addChild($5);

@@ -20,6 +20,7 @@ enum StmtType {
     STMT_FOR,
     STMT_WHILE,
     STMT_IF_ELSE,
+	STMT_IF,
     STMT_PRINTF,
     STMT_SCANF,
 	STMT_RETURN
