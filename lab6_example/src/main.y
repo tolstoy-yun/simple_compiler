@@ -2,7 +2,6 @@
     #include "common.h"
     #define YYSTYPE Node *  
     extern int lineno;
-    extern ofstream fout;
     extern symbol_table symtbl;
     extern tree parse_tree;
     extern int scope; //记录当前所处的作用域域的标号
@@ -116,6 +115,7 @@ declaration
             temp->number=symbolNum;
             currentScope.push(temp);
             symbolNum++;
+            temp=temp->sibling;
          }
     }
     //$2的类型是expr，对应T IDENTIFIER=n,……;的情况
@@ -145,32 +145,7 @@ declaration
 }
 ;
 
-func: T IDENTIFIER LPAREN specialID RPAREN statement{
-    NodeAttr attr=NodeAttr();
-    Node* node=new Node($2->lineno,NODE_FUNC,-1,attr,$1->type);
-    node->seq=parse_tree.node_seq++;
-    //如果没有重定义，则放入符号表
-    if($2->suspected_redefine==1){
-        cerr << "[line " <<$2->lineno<<"]："<<$2->attr.var_name <<" has been declared before."<< endl;
-        exit(1);
-    }
-    $2->pos=symtbl.insert($2->attr.var_name,VAR_COMMON);
-    $2->type=$1->type;
-    symtbl.set_type($2->pos,$1->type);
-
-    //变量遇到T开头的定义，压入currentScope栈，并分配一个符号（=symbolNum）
-    $2->number=symbolNum;
-    symbolNum++;
-    currentScope.push($2);
-
-    node->addChild($1);
-    node->addChild($2);
-    node->addChild($4);
-    node->addChild($6);
-    parse_tree.type_check(node);
-    $$=node;
-}
-| T IDENTIFIER LPAREN RPAREN statement{
+func:T IDENTIFIER LPAREN RPAREN statement{
     NodeAttr attr=NodeAttr();
     Node* node=new Node($2->lineno,NODE_FUNC,-1,attr,$1->type);
     node->seq=parse_tree.node_seq++;
@@ -191,6 +166,7 @@ func: T IDENTIFIER LPAREN specialID RPAREN statement{
     node->addChild($2);
     node->addChild($5);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 ;
@@ -348,6 +324,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_MINUS_ASSIGN expr{
@@ -357,6 +334,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_ASSIGN expr{
@@ -366,6 +344,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_PLUS expr{
@@ -375,6 +354,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_MINUS expr{
@@ -384,6 +364,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_MUL expr{
@@ -393,6 +374,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_DIV expr{
@@ -402,6 +384,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_MOD expr{
@@ -411,6 +394,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_INC{
@@ -419,6 +403,7 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_DEC{
@@ -427,6 +412,7 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_AND expr{
@@ -436,6 +422,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_OR expr{
@@ -445,6 +432,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | LOP_OPPSITE expr{
@@ -453,6 +441,7 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($2);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_LE expr{
@@ -462,6 +451,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_GE expr{
@@ -471,6 +461,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_NZ expr{
@@ -480,6 +471,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_GT expr{
@@ -489,6 +481,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_LT expr{
@@ -498,6 +491,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | expr LOP_EQ expr{
@@ -507,6 +501,7 @@ expr
     node->addChild($1);
     node->addChild($3);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | LPAREN expr RPAREN{$$=$1;}
@@ -516,6 +511,7 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($2);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 | LOP_PLUS expr{
@@ -524,6 +520,7 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($2);
     parse_tree.type_check(node);
+    parse_tree.get_temp_var(node);
     $$=node;
 }
 ;

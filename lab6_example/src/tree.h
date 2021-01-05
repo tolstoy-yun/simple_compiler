@@ -40,14 +40,14 @@ enum OperatorType
     OP_MUL,   // *
     OP_DIV,   // /
     OP_MOD,   // %
-    OP_AND,   // &&
-    OP_OR,    // ||
-    OP_OPPSITE, // !
-    OP_ASSIGN,  // =
     OP_PLUS_ASSIGN, // +=
     OP_MINUS_ASSIGN, // -=
     OP_INC,    // ++
-    OP_DEC    // --
+    OP_DEC,    // --
+	OP_AND,   // &&
+    OP_OR,    // ||
+    OP_OPPSITE, // !
+    OP_ASSIGN,  // =
 }
 ;
 
@@ -129,7 +129,6 @@ public:
 	Node();
 	void addChild(Node* t);
     void addSibling(Node* t);
-	void genNodeId();
 };
 
 class tree
@@ -147,9 +146,10 @@ public:
 	void recursive_get_label(Node *t);
 	void stmt_get_label(Node *t);
 	void expr_get_label(Node *t);
-	void func_get_label(Node *t)
+	void func_get_label(Node *t);
 	void gen_header(ostream &out);
 	void gen_decl(ostream &out, Node *t);
+	void gen_str(ostream &out, Node *t);
 	void recursive_gen_code(ostream &out, Node *t);
 	void stmt_gen_code(ostream &out, Node *t);
 	void expr_gen_code(ostream &out, Node *t);
@@ -158,6 +158,6 @@ public:
 	Node* NewRoot(int lineno,NodeType kind, int kind_kind, NodeAttr attr, int type,
 		Node *child = NULL);
 	void get_label(void);
-	void gen_code(ostream &out);
+	void gen_code(ostream &out,Node* p);
 };
 #endif

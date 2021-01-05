@@ -60,6 +60,29 @@
 * 05_void_return.c
 * void func don't need return anything, will cause error (This test is not necessary)
 */
-void main(){
-	return 0;
+// void main(){
+// 	return 0;
+// }
+
+/*
+* 00_main.c
+*/
+// int main(){
+//     return 0;
+// }
+
+/*
+* 04_if.c
+*/
+int a;
+int main(){
+    int b;
+    scanf("%d",&a);
+    if(a>0){
+        int c;
+        a-=20;
+    }
+    int d;
+    printf("test:%d\n",a);
+    return 0;
 }

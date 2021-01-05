@@ -1014,7 +1014,11 @@ case 40:
 YY_RULE_SETUP
 #line 94 "src/main.lex"
 {
-    NodeAttr attr=NodeAttr(yytext[1]);
+    string str=string(yytext);
+    str.erase(str.begin());
+    str.erase(str.end()-1);
+    NodeAttr attr=NodeAttr(str);
+    cout<<"string："<<str<<endl;
     Node* node = new Node(lineno,NODE_CONST,-1,attr,String);
     node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
@@ -1024,7 +1028,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 103 "src/main.lex"
+#line 107 "src/main.lex"
 {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_VAR,VAR_COMMON,attr,Notype);
@@ -1062,7 +1066,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 138 "src/main.lex"
+#line 142 "src/main.lex"
 {
     scope++;
     return LBRACE;
@@ -1070,7 +1074,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 143 "src/main.lex"
+#line 147 "src/main.lex"
 {
     scope--;
     //遍历栈，删除firstScope>scope的结点
@@ -1094,28 +1098,28 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 164 "src/main.lex"
+#line 168 "src/main.lex"
 /* do nothing */
 	YY_BREAK
 case 45:
 /* rule 45 can match eol */
 YY_RULE_SETUP
-#line 166 "src/main.lex"
+#line 170 "src/main.lex"
 lineno++;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 168 "src/main.lex"
+#line 172 "src/main.lex"
 {
     cerr << "[line "<< lineno <<" ] unknown character:" << yytext << endl;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 171 "src/main.lex"
+#line 175 "src/main.lex"
 ECHO;
 	YY_BREAK
-#line 1119 "src/main.lex.yy.cpp"
+#line 1123 "src/main.lex.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2083,5 +2087,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 171 "src/main.lex"
+#line 175 "src/main.lex"
 

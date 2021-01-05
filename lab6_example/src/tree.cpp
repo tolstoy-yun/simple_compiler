@@ -110,7 +110,7 @@ void tree::type_check(Node *t)
 						exit(1);
 					}
 					break;
-				case STMT_IF：
+				case STMT_IF:
 					if(t->children->type!=Boolean)
 					{
 						cerr <<"[line " <<t->lineno<<"]：Bad boolean type." << endl;
@@ -376,20 +376,23 @@ void tree::type_check(Node *t)
 
 void tree::get_temp_var(Node *t)
 {
-	if (t->kind != NODE_EXPR)
+	if (t->kind != NODE_EXPR && t->kind_kind!=EXPR_OP)
 		return;
-	if (t->attr.op < OP_PLUS || t->attr.op > OVER)
+	if (t->attr.op < OP_PLUS || t->attr.op > OP_DEC)
 		return;
 
 	Node *arg1 = t->children;
 	Node *arg2 = t->children->sibling;
 
-	if (arg1->kind_kind == EXPR_OP)
-		temp_var_seq--;
-	if (arg2 && arg2->kind_kind == EXPR_OP)
+	if (arg1->kind==NODE_EXPR && arg1->kind_kind == EXPR_OP){
 		tree::temp_var_seq--;
+	}	
+	if (arg2 && arg2->kind==NODE_EXPR && arg2->kind_kind == EXPR_OP){
+		tree::temp_var_seq--;
+	}	
 	t->temp_var = tree::temp_var_seq;
 	tree::temp_var_seq++;
+	cout<<"临时变量值为："<<t->temp_var<<endl;
 }
 
 Node* tree::NewRoot(int lineno,NodeType kind, int kind_kind, NodeAttr attr, int type,
@@ -543,7 +546,8 @@ void tree::expr_get_label(Node *t)
 	case OP_OR:
 		e1->label.true_label = e2->label.true_label = t->label.true_label;
         e1->label.false_label = new_label();
-        e2->label.false_label = t->label.false_label;;
+        e2->label.false_label = t->label.false_label;
+		break;
 	case OP_OPPSITE:
 		e1->label.true_label = t->label.false_label;
         e1->label.false_label = t->label.true_label;
@@ -571,13 +575,11 @@ void tree::recursive_get_label(Node *t)
 		expr_get_label(t);
 	else if(t->kind == NODE_FUNC)
 		func_get_label(t);
-
 }
 
 void tree::get_label(void)
 {
 	Node *p = root;
-
 	p->label.begin_label = "_start";
 	recursive_get_label(p);
 }
@@ -588,23 +590,37 @@ void tree::gen_header(ostream &out)
 }
 
 void tree::gen_decl(ostream &out, Node *t)
-{
-    out << endl << "# define your veriables and temp veriables here" << endl;
+{ 
+	//声明全局变量
+	out << endl << "# define your veriables and temp veriables here" << endl;
 	out << "\t.bss" << endl;
-	for (; t->kind == NODE_DECL; t = t->sibling)
-	{
-		for (Node *p = t->children->sibling; p; p = p->sibling)
-			if (p->type == Integer)
-				out << "_" << symtbl.getname(p->pos) << ":" << endl;
-                out << "\t.zero\t4" << endl;
-                out << "\t.align\t4" << endl;
-	}
 	
+	Node* p=t;
+	while(p){
+		if (p->kind==NODE_STMT && p->kind_kind == STMT_DECL){
+			out << "\t.align\t4" << endl;
+			for (Node *p = t->children->sibling; p; p = p->sibling){
+				if(p->kind==NODE_VAR){
+					if (p->type == Integer)
+						out << "_" << symtbl.getname(p->pos) << ":" << endl;
+				}
+				else{
+					p=p->children;
+					if(t->type==Integer)
+						out << "_" << symtbl.getname(p->pos) << ":" << endl;
+				}
+			}
+			out << "\t.zero\t4" << endl;
+		}
+		p=p->sibling;
+	}
+
+	//声明临时变量       
 	for (int i = 0; i < temp_var_seq; i++)
 	{
+		out << "\t.align\t4" << endl;
 		out << "t" <<  i << ":" << endl;
         out << "\t.zero\t4" << endl;
-        out << "\t.align\t4" << endl;
 	}
 }
 
@@ -637,8 +653,8 @@ void tree::stmt_gen_code(ostream &out, Node *t)
 
 void tree::expr_gen_code(ostream &out, Node *t)
 {
-	Node *e1 = t->children[0];
-	Node *e2 = t->children[1];
+	Node *e1 = t->children;
+	Node *e2 = t->children->sibling;
 	switch (t->attr.op)
 	{
 	case OP_ASSIGN:
@@ -646,26 +662,28 @@ void tree::expr_gen_code(ostream &out, Node *t)
 
 	case OP_PLUS:
 		out << "\tmovl $";
-		if (e1->kind_kind == ID_EXPR)
-			out << "_" << symtbl.getname(e1->attr.symtbl_seq);
-		else if (e1->kind_kind == CONST_EXPR)
-			out << e1->attr.vali;
-		else out << "t" << e1->temp_var;
-		out << ", %eax" <<endl;
-		out << "\taddl $";
-		if (e2->kind_kind == ID_EXPR)
-			out << "_" << symtbl.getname(e2->attr.symtbl_seq);
-		else if (e2->kind_kind == CONST_EXPR)
-			out << e2->attr.vali;
-		else out << "t" << e2->temp_var;
-		out << ", %eax" << endl;
-		out << "\tmovl %eax, $t" << t->temp_var << endl;
+		// if (e1->kind_kind == VAR_COMMON)
+		// 	out << "_" << symtbl.getname(e1->attr.symtbl_seq);
+		// else if (e1->kind_kind == CONST_EXPR)
+		// 	out << e1->attr.vali;
+		// else out << "t" << e1->temp_var;
+		// out << ", %eax" <<endl;
+		// out << "\taddl $";
+		// if (e2->kind_kind == ID_EXPR)
+		// 	out << "_" << symtbl.getname(e2->attr.symtbl_seq);
+		// else if (e2->kind_kind == CONST_EXPR)
+		// 	out << e2->attr.vali;
+		// else out << "t" << e2->temp_var;
+		// out << ", %eax" << endl;
+		// out << "\tmovl %eax, $t" << t->temp_var << endl;
 		break;
     case OP_AND:
         out << "\t# your own code of AND operation here" << endl;
         out << "\tjl @1" << endl;
         out << "\t# your asm code of AND operation end" << endl;
 	case OP_LT:
+		break;
+	default:
 		break;
     /* ... */
 	}
@@ -681,19 +699,65 @@ void tree::recursive_gen_code(ostream &out, Node *t)
 	{
 		expr_gen_code(out, t);
 	}
+	else if(t->kind == NODE_FUNC)
+	{
+		;
+	}
 }
 
-void tree::gen_code(ostream &out)
+//生成str
+void tree::gen_str(ostream &out,Node* p)
+{	
+	static bool print_rodata = false;
+	static int str_seq = 0;
+	p=p->children;
+	while(p){
+		if(p->kind==NODE_CONST && p->type==String){
+			if (!print_rodata) {
+                print_rodata = true;
+				out<<endl;
+                out << "\t.section\t.rodata" << endl;
+            }
+			//还需要将str加入一个表
+			out<<"STR"<<str_seq<<":"<<endl;
+			out<<"\t.string\t\""<<p->attr.vals<<"\""<<endl;
+			str_seq++;
+		}
+		else if(p->children){
+			gen_str(out,p);
+		}
+		p=p->sibling;
+	}
+}
+
+void tree::gen_code(ostream &out,Node* p)
 {
-	gen_header(out);
-	Node *p = root->children;
-	if (p->kind == NODE_DECL)
-		gen_decl(out, p);
-    out << endl << endl << "# your asm code here" << endl;
-	out << "\t.text" << endl;
-    out << "\t.globl _start" << endl;
-	recursive_gen_code(out, root);
-	if (root->label.next_label != "")
-		out << root->label.next_label << ":" << endl;
+	switch(p->kind){
+		case NODE_PROG:
+			gen_header(out);
+			gen_decl(out,p->children);
+			gen_str(out,p);
+			out << endl << endl << "# your asm code here" << endl;
+			out << "\t.text" << endl;
+    		out << "\t.globl _start" << endl;
+
+			break;
+		case NODE_CONST:
+			break;
+		case NODE_VAR:
+			break;
+		case NODE_EXPR:
+			break;
+		case NODE_TYPE:
+			break;
+		case NODE_STMT:
+			break;
+		case NODE_FUNC:
+			break;
+	}
+
+	// recursive_gen_code(out, root);
+	// if (root->label.next_label != "")
+	// 	out << root->label.next_label << ":" << endl;
 	out << "\tret" << endl;
 }

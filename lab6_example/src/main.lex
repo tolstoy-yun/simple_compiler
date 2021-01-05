@@ -92,7 +92,11 @@ RBRACE \}
 }
 
 {STRING} {
-    NodeAttr attr=NodeAttr(yytext[1]);
+    string str=string(yytext);
+    str.erase(str.begin());
+    str.erase(str.end()-1);
+    NodeAttr attr=NodeAttr(str);
+    cout<<"string："<<str<<endl;
     Node* node = new Node(lineno,NODE_CONST,-1,attr,String);
     node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
