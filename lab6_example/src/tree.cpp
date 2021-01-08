@@ -141,9 +141,9 @@ void tree::type_check(Node *t)
 			{	
 				switch(t->attr.op)
 				{	
-					//+=，两个操作数可以都为int，都为char，一个是int，一个是char
+					//+=，两个操作数都为int
 					case OP_PLUS_ASSIGN:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==Integer&&t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -153,7 +153,7 @@ void tree::type_check(Node *t)
 						break;
 					//-=，两个操作数可以都为int，都为char，一个是int，一个是char
 					case OP_MINUS_ASSIGN:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==Integer&&t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -175,7 +175,7 @@ void tree::type_check(Node *t)
 					case OP_PLUS:
 						//加运算
 						if(t->children->sibling){
-							if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+							if(t->children->type==Integer&&t->children->sibling->type==Integer){
 								break;
 							}
 							else{
@@ -197,7 +197,7 @@ void tree::type_check(Node *t)
 					case OP_MINUS:
 						//减运算
 						if(t->children->sibling!=nullptr){
-							if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+							if(t->children->type==Integer&&t->children->sibling->type==Integer){
 								break;
 							}
 							else{
@@ -217,7 +217,7 @@ void tree::type_check(Node *t)
 						break;
 					//*，乘，同上
 					case OP_MUL:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==Integer&&t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -226,7 +226,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					case OP_DIV:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==Integer&&t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -235,7 +235,7 @@ void tree::type_check(Node *t)
 						}
 						break;
 					case OP_MOD:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==Integer&&t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -245,14 +245,14 @@ void tree::type_check(Node *t)
 						break;
 					//++，其孩子节点需要为int或char
 					case OP_INC:
-						if(t->children->type!=Integer && t->children->type!=Char){
+						if(t->children->type!=Integer){
 							cerr <<"[line " <<t->lineno<<"]：Bad \"++\" type." << endl;
 							exit(1);
 						}
 						break;
 					//--
 					case OP_DEC:
-						if(t->children->type!=Integer && t->children->type!=Char){
+						if(t->children->type!=Integer){
 							cerr <<"[line " <<t->lineno<<"]：Bad \"--\" type." << endl;
 							exit(1);
 						}
@@ -278,9 +278,9 @@ void tree::type_check(Node *t)
 							exit(1);
 						}
 						break;
-					//<=，两个操作数可以都为int，都为char，一个是int，一个是char
+					//<=，两个操作数可以都为int
 					case OP_LE:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==Integer&&t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -288,9 +288,9 @@ void tree::type_check(Node *t)
 							exit(1);
 						}
 						break;
-					//>=，两个操作数可以都为int，都为char，一个是int，一个是char
+					//>=，两个操作数可以都为int
 					case OP_GE:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==Integer&&t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -300,7 +300,7 @@ void tree::type_check(Node *t)
 						break;
 					//!=
 					case OP_NZ:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -310,7 +310,7 @@ void tree::type_check(Node *t)
 						break;
 					//>
 					case OP_GT:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==Integer&&t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -320,7 +320,7 @@ void tree::type_check(Node *t)
 						break;
 					//<
 					case OP_LT:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==Integer&&t->children->sibling->type==Integer){
 							break;
 						}
 						else{
@@ -330,7 +330,7 @@ void tree::type_check(Node *t)
 						break;
 					//==
 					case OP_EQ:
-						if((t->children->type==Integer&&t->children->sibling->type==Integer) || (t->children->type==Integer&&t->children->sibling->type==Char) || (t->children->type==Char&&t->children->sibling->type==Integer) || (t->children->type==Char&&t->children->sibling->type==Char)){
+						if(t->children->type==t->children->sibling->type){
 							break;
 						}
 						else{
@@ -376,23 +376,31 @@ void tree::type_check(Node *t)
 
 void tree::get_temp_var(Node *t)
 {
-	if (t->kind != NODE_EXPR && t->kind_kind!=EXPR_OP)
+	if (t->kind == NODE_EXPR && t->kind_kind==EXPR_OP){
+		if (t->attr.op < OP_PLUS || t->attr.op > OP_MINUS_ASSIGN)
+			return;
+	} 
+	else if(t->kind!=NODE_VAR){
 		return;
-	if (t->attr.op < OP_PLUS || t->attr.op > OP_DEC)
-		return;
+	}
+		
+	if (t->kind == NODE_EXPR && t->kind_kind==EXPR_OP){
+		Node *arg1 = t->children;
+		Node *arg2 = t->children->sibling;
 
-	Node *arg1 = t->children;
-	Node *arg2 = t->children->sibling;
-
-	if (arg1->kind==NODE_EXPR && arg1->kind_kind == EXPR_OP){
-		tree::temp_var_seq--;
-	}	
-	if (arg2 && arg2->kind==NODE_EXPR && arg2->kind_kind == EXPR_OP){
-		tree::temp_var_seq--;
-	}	
-	t->temp_var = tree::temp_var_seq;
-	tree::temp_var_seq++;
-	cout<<"临时变量值为："<<t->temp_var<<endl;
+		if (arg1->kind==NODE_EXPR && arg1->kind_kind == EXPR_OP){
+			tree::temp_var_seq--;
+		}	
+		if (arg2 && arg2->kind==NODE_EXPR && arg2->kind_kind == EXPR_OP){
+			tree::temp_var_seq--;
+		}
+		t->children->temp_var = tree::temp_var_seq;
+		tree::temp_var_seq++;
+	}
+	else if(t->kind==NODE_VAR){
+		t->temp_var=tree::temp_var_seq;
+		tree::temp_var_seq++;
+	}
 }
 
 Node* tree::NewRoot(int lineno,NodeType kind, int kind_kind, NodeAttr attr, int type,
@@ -595,19 +603,17 @@ void tree::gen_decl(ostream &out, Node *t)
 	out << endl << "# define your veriables and temp veriables here" << endl;
 	out << "\t.bss" << endl;
 	
-	Node* p=t;
+	Node* p=t->children;
 	while(p){
 		if (p->kind==NODE_STMT && p->kind_kind == STMT_DECL){
 			out << "\t.align\t4" << endl;
-			for (Node *p = t->children->sibling; p; p = p->sibling){
-				if(p->kind==NODE_VAR){
-					if (p->type == Integer)
-						out << "_" << symtbl.getname(p->pos) << ":" << endl;
+			for (Node*q=p->children->sibling; q; q = q->sibling){
+				if(q->kind==NODE_VAR){
+					out << "_" << symtbl.getname(q->pos) << ":" << endl;
 				}
 				else{
-					p=p->children;
-					if(t->type==Integer)
-						out << "_" << symtbl.getname(p->pos) << ":" << endl;
+					if(q->children->kind==NODE_VAR)
+						out << "_" << symtbl.getname(q->children->pos) << ":" << endl;
 				}
 			}
 			out << "\t.zero\t4" << endl;
@@ -732,32 +738,239 @@ void tree::gen_str(ostream &out,Node* p)
 
 void tree::gen_code(ostream &out,Node* p)
 {
+	if(p==nullptr){
+		return;
+	}
+	Node* q=p->children;
+	string var="";
 	switch(p->kind){
 		case NODE_PROG:
 			gen_header(out);
-			gen_decl(out,p->children);
+			//声明全局和临时变量
+			gen_decl(out,p);
+			//声明string类型
 			gen_str(out,p);
-			out << endl << endl << "# your asm code here" << endl;
+			out<<endl;
 			out << "\t.text" << endl;
-    		out << "\t.globl _start" << endl;
-
+			while(q){
+				if(q->kind==NODE_STMT || q->kind==NODE_FUNC){
+					gen_code(out,q);
+				}
+				q=q->sibling;
+			}
+			out<<".section"<<endl;
 			break;
 		case NODE_CONST:
+			switch(p->type){
+				case Notype:
+					break;
+				case Integer:
+					break;
+				case Boolean:
+					break;
+				case Char:
+					break;
+				case String:
+					break;
+				default:
+					break;
+			}
 			break;
 		case NODE_VAR:
 			break;
 		case NODE_EXPR:
+			switch(p->attr.op){
+				//+=
+				case OP_PLUS_ASSIGN:
+					out << "\tmovl\t" << get_var(p->children) << ", %ebx" << endl;
+                 	out << "\taddl\t%ebx, %eax" << endl;
+                 	out << "\tmovl\t%eax, " << get_var(p->children) << endl;
+					gen_code(out,p->sibling);
+					break;
+				//-=
+				case OP_MINUS_ASSIGN:
+					out << "\tmovl\t" << get_var(p->children) << ", %ebx" << endl;
+                 	out << "\tsubl\t%eax, %ebx" << endl;
+                 	out << "\tmovl\t%ebx, %eax" << endl;
+                 	out << "\tmovl\t%eax, " << get_var(p->children) << endl;
+					gen_code(out,p->sibling);
+					break;
+				//=
+				case OP_ASSIGN:
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out << "\tmovl\t%eax, " << get_var(p->children) << endl;
+					gen_code(out,p->sibling);
+					break;
+				//+
+				case OP_PLUS:
+					gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\taddl\t%ebx,%eax"<<endl;
+					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					break;
+				//-
+				case OP_MINUS:
+					gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\tsubl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t%ebx, %eax" << endl;
+					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+				//*
+				case OP_MUL:
+					gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\timull\t%ebx,%eax"<<endl;
+					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					break;
+				// /
+				case OP_DIV:
+					gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %ebx" << endl;
+					out<<"\tidivl\t%ebx"<<endl;
+					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					break;
+				// %
+				case OP_MOD:
+					gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %ebx" << endl;
+					out<<"\tidivl\t%ebx"<<endl;
+					out<<"\tmovl\t%edx,"<<get_var(p)<<endl;
+					break;
+				//++
+				case OP_INC:
+					gen_code(out,p->children);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t$1" << ", %eax" << endl;
+					out<<"\taddl\t%ebx,%eax"<<endl;
+					out << "\tmovl\t%eax, " << get_var(p->children) << endl;
+					gen_code(out,p->sibling);
+					break;
+				//--
+				case OP_DEC:
+					gen_code(out,p->children);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t$1" << ", %eax" << endl;
+					out<<"\tsubl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t%ebx, %eax" << endl;
+					out << "\tmovl\t%eax, " << get_var(p->children) << endl;
+					gen_code(out,p->sibling);
+					break;
+				//&&
+				case OP_AND:
+					gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\tandl\t%ebx,%eax"<<endl;
+					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					gen_code(out,p->sibling);
+					break;
+				//||
+				case OP_OR:
+					gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\torl\t%ebx,%eax"<<endl;
+					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					gen_code(out,p->sibling);
+					break;
+				//!
+				case OP_OPPSITE:
+					gen_code(out,p->children);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\tandl\t%ebx,%eax"<<endl;
+					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					gen_code(out,p->sibling);
+					break;
+				//<=
+				case OP_LE:
+					gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\tcmpl\t%ebx,%eax"<<endl;
+					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					gen_code(out,p->sibling);
+					break;
+				//>=
+				case OP_GE:
+					break;
+				//!=
+				case OP_NZ:
+					break;
+				//>
+				case OP_GT:
+					break;
+				//<
+				case OP_LT:
+					break;
+				//==
+				case OP_EQ:
+					break;
+				default:
+					break;
+			}
 			break;
 		case NODE_TYPE:
 			break;
 		case NODE_STMT:
 			break;
 		case NODE_FUNC:
+			cout<<endl;
+			//声明函数
+			out<<"\t.globl\t"<<q->sibling->attr.var_name<<endl;
+			out<< "\t.type\t" << q->sibling->attr.var_name << ", @function" << endl;
+            out<< q->sibling->attr.var_name << ":" << endl;
+			//递归生成函数内部代码
+			gen_code(out,q->sibling->sibling);
+			out << "\tret" << endl;
 			break;
 	}
+	return;
+}
 
-	// recursive_gen_code(out, root);
-	// if (root->label.next_label != "")
-	// 	out << root->label.next_label << ":" << endl;
-	out << "\tret" << endl;
+string tree::get_var(Node* p){
+	string result="";
+	if(p->kind==NODE_VAR || (p->kind==NODE_EXPR && p->kind_kind==EXPR_OP)){
+		//全局变量，直接返回名字
+		if(p->global_val==1){
+			return p->attr.var_name;
+		}
+		//返回其临时变量名
+		else{
+			result="t"+to_string(p->temp_var);
+			return result;
+		}
+	}
+	//数字
+	else if(p->kind==NODE_CONST && p->type==Integer){
+		result="$"+to_string(p->attr.vali);
+		return result;
+	}
+	else if(p->kind==NODE_CONST && p->type==Boolean){
+		result="$"+to_string(p->attr.vali);
+		return result;
+	}
 }

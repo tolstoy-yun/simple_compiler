@@ -23,7 +23,6 @@ CHAR \'.?\'
 STRING \".+\"
 
 IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
-IDQuote \&[[:alpha:]_][[:alpha:][:digit:]_]*
 
 LBRACE \{
 RBRACE \}
@@ -96,7 +95,6 @@ RBRACE \}
     str.erase(str.begin());
     str.erase(str.end()-1);
     NodeAttr attr=NodeAttr(str);
-    cout<<"string："<<str<<endl;
     Node* node = new Node(lineno,NODE_CONST,-1,attr,String);
     node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
@@ -126,6 +124,10 @@ RBRACE \}
             }
             node->number=tempNode->number;
             node->type=tempNode->type;//类型也相同
+            node->global_val=tempNode->global_val;//全局flag也相同
+            if(node->global_val==1){
+                cout<<"又发现一个全局变量："<<node->attr.var_name<<endl;
+            }
             break;
         }
     }

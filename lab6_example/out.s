@@ -6,17 +6,46 @@
 _a:
 	.zero	4
 	.align	4
+_b:
+	.zero	4
+	.align	4
+_c:
+	.zero	4
+	.align	4
+_d:
+	.zero	4
+	.align	4
 t0:
+	.zero	4
+	.align	4
+t1:
 	.zero	4
 
 	.section	.rodata
 STR0:
-	.string	"%d"
-STR1:
 	.string	"test:%d\n"
 
-
-# your asm code here
 	.text
-	.globl _start
+	.globl	main
+	.type	main, @function
+main:
+	movl	c, %eax
+	movl	%eax,%ebx
+	movl	d, %eax
+	andl	%ebx,%eax
+	movl	%eax,t0
+	movl	t0, %eax
+	movl	%eax, c
+	movl	$9, %eax
+	movl	%eax, a
+	movl	$0, %eax
+	movl	%eax, b
+	movl	a, %eax
+	movl	%eax,%ebx
+	movl	b, %eax
+	addl	%ebx,%eax
+	movl	%eax,t0
+	movl	t0, %eax
+	movl	%eax, a
 	ret
+.section

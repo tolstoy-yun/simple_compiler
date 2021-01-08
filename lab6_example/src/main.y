@@ -10,7 +10,7 @@
     int yylex();
     int yyerror( char const * );
 %}
-%token T_CHAR T_INT T_STRING T_BOOL T_VOID IDPointer IDQuote
+%token T_CHAR T_INT T_STRING T_BOOL T_VOID
 
 %token S_FOR S_IF S_WHILE S_ELSE S_SKIP S_RETURN
 
@@ -42,7 +42,6 @@ program
 : statements {
     NodeAttr attr=NodeAttr();
     parse_tree.root =parse_tree.NewRoot(0, NODE_PROG,-1,attr,Notype,$1); 
-    parse_tree.type_check(parse_tree.root);
 };
 
 statements
@@ -65,7 +64,17 @@ statement
 | for_stmt {$$=$1;}
 | printf SEMICOLON {$$=$1;}
 | scanf SEMICOLON {$$=$1;}
-| expr SEMICOLON {$$=$1;}
+| expr SEMICOLON {
+    $$=$1; 
+    parse_tree.type_check($1);
+    Node* p=$1->children;
+    while(p!=nullptr){
+        if(p->kind==NODE_EXPR){
+            parse_tree.type_check(p);
+        }
+        p=p->sibling;
+    }
+}
 | func {$$=$1;}
 | return_stmt {$$ = $1;}
 ;
@@ -99,9 +108,18 @@ declaration
         $2->pos=symtbl.insert($2->attr.var_name,VAR_COMMON);
         $2->type=$1->type;
         symtbl.set_type($2->pos,$1->type);
+        //设全局
+        if($2->firstScope==0){
+            $2->global_val=1;
+            cout<<"有一个全局变量："<<$2->attr.var_name<<endl;
+        }
+        else{
+            parse_tree.get_temp_var($2);
+        }
         $2->number=symbolNum;
         symbolNum++;
         currentScope.push($2);
+        parse_tree.type_check($2);
          //将$2的兄弟结点也设置type
          Node* temp=$2->sibling;
          while(temp){
@@ -115,6 +133,14 @@ declaration
             temp->number=symbolNum;
             currentScope.push(temp);
             symbolNum++;
+            parse_tree.type_check(temp);
+            //设全局
+            if(temp->firstScope==0){
+                temp->global_val=1;
+            }
+            else{
+                parse_tree.get_temp_var(temp);
+            }
             temp=temp->sibling;
          }
     }
@@ -135,6 +161,13 @@ declaration
             cur->number=symbolNum;
             symbolNum++;
             currentScope.push(cur);
+            //设全局
+            if(cur->firstScope==0){
+                cur->global_val=1;
+            }
+            else{
+                parse_tree.get_temp_var(cur);
+            }
             t=t->sibling;
         }
     }
@@ -161,7 +194,10 @@ func:T IDENTIFIER LPAREN RPAREN statement{
     $2->number=symbolNum;
     symbolNum++;
     currentScope.push($2);
-
+    //设全局
+    if($2->firstScope==0){
+        $2->global_val=1;
+    }
     node->addChild($1);
     node->addChild($2);
     node->addChild($5);
@@ -220,6 +256,9 @@ for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statement {
     node->addChild($5);
     node->addChild($7);
     node->addChild($9);
+    parse_tree.type_check($3);
+    parse_tree.type_check($5);
+    parse_tree.type_check($7);
     parse_tree.type_check(node);
     $$=node;
 }
@@ -231,6 +270,8 @@ for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statement {
     node->addChild($5);
     node->addChild($7);
     node->addChild($9);
+    parse_tree.type_check($5);
+    parse_tree.type_check($7);
     parse_tree.type_check(node);
     $$=node;
 }
@@ -242,6 +283,7 @@ while_stmt: S_WHILE LPAREN expr RPAREN statement {
     node->seq=parse_tree.node_seq++;
     node->addChild($3);
     node->addChild($5);
+    parse_tree.type_check($3);
     parse_tree.type_check(node);
     $$=node;
 }
@@ -253,6 +295,7 @@ if_stmt: S_IF LPAREN expr RPAREN statement %prec LOWER_THAN_ELSE{
     node->seq=parse_tree.node_seq++;
     node->addChild($3);
     node->addChild($5);
+    parse_tree.type_check($3);
     parse_tree.type_check(node);
     $$=node;
 }
@@ -263,6 +306,7 @@ if_stmt: S_IF LPAREN expr RPAREN statement %prec LOWER_THAN_ELSE{
     node->addChild($3);
     node->addChild($5);
     node->addChild($7);
+    parse_tree.type_check($3);
     parse_tree.type_check(node);
     $$=node;
 }
@@ -323,7 +367,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -333,7 +376,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -343,7 +385,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -353,7 +394,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -363,7 +403,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -373,7 +412,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -383,7 +421,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -393,7 +430,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -402,7 +438,6 @@ expr
     Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,$1->type);
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -411,7 +446,6 @@ expr
     Node* node=new Node($1->lineno,NODE_EXPR,EXPR_OP,attr,$1->type);
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -421,7 +455,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -431,7 +464,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -440,7 +472,6 @@ expr
     Node* node=new Node($2->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
     node->seq=parse_tree.node_seq++;
     node->addChild($2);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -450,7 +481,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -460,7 +490,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -470,7 +499,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -480,7 +508,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -490,7 +517,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -500,7 +526,6 @@ expr
     node->seq=parse_tree.node_seq++;
     node->addChild($1);
     node->addChild($3);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -510,7 +535,6 @@ expr
     Node* node=new Node($2->lineno,NODE_EXPR,EXPR_OP,attr,$2->type);
     node->seq=parse_tree.node_seq++;
     node->addChild($2);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }
@@ -519,7 +543,6 @@ expr
     Node* node=new Node($2->lineno,NODE_EXPR,EXPR_OP,attr,$2->type);
     node->seq=parse_tree.node_seq++;
     node->addChild($2);
-    parse_tree.type_check(node);
     parse_tree.get_temp_var(node);
     $$=node;
 }

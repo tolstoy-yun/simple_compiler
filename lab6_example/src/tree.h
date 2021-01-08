@@ -40,14 +40,15 @@ enum OperatorType
     OP_MUL,   // *
     OP_DIV,   // /
     OP_MOD,   // %
+	OP_AND,   // &&
+    OP_OR,    // ||
+    OP_OPPSITE, // !
     OP_PLUS_ASSIGN, // +=
     OP_MINUS_ASSIGN, // -=
     OP_INC,    // ++
     OP_DEC,    // --
-	OP_AND,   // &&
-    OP_OR,    // ||
-    OP_OPPSITE, // !
-    OP_ASSIGN,  // =
+	OP_ASSIGN,  // =
+	
 }
 ;
 
@@ -89,6 +90,7 @@ struct NodeAttr {
 	VarType vartype;//变量的类型
 	int vali;//int的值
 	char valc;//char的值
+	
 	string vals;//string的值
 	string var_name;//变量的名称
 	
@@ -122,7 +124,7 @@ public:
 	int firstScope=-1; //当node类型为变量时，记录下它被定义时所处的作用域标号
     int number=-1; //当node类型为变量时，其被分配的序号
 	int suspected_redefine=0;//疑似重定义符号标志位，为1时代表这个符号疑似重定义了
-
+	int global_val=0;//全局变量标志位，1为全局变量
 	void output(void);
 
 	Node(int lineno,NodeType kind, int kind_kind, NodeAttr attr, int type);
@@ -159,5 +161,6 @@ public:
 		Node *child = NULL);
 	void get_label(void);
 	void gen_code(ostream &out,Node* p);
+	string get_var(Node* p);
 };
 #endif

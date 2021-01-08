@@ -69,3 +69,26 @@ int symbol_table::get_type(int pos)
 
 	return table[pos].type;
 }
+
+int symbol_table::get_scope(int pos)
+{
+	if (pos < 0 || pos >= size)
+	{
+		cerr << "Bad identifier" << endl;
+		exit(1);
+	}
+
+	return table[pos].scope;
+}
+
+int symbol_table::set_scope(int pos, int scope)
+{
+	if (pos < 0 || pos >= size)
+	{
+		cerr << "Bad identifier" << endl;
+		exit(1);
+	}
+
+	table[pos].scope = scope;
+	return 0;
+}

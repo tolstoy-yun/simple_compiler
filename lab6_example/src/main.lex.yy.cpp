@@ -739,7 +739,7 @@ YY_DECL
 		}
 
 	{
-#line 30 "src/main.lex"
+#line 29 "src/main.lex"
 
 
 #line 746 "src/main.lex.yy.cpp"
@@ -802,192 +802,192 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 32 "src/main.lex"
+#line 31 "src/main.lex"
 /* do nothing */
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 33 "src/main.lex"
+#line 32 "src/main.lex"
 /* do nothing */
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 35 "src/main.lex"
+#line 34 "src/main.lex"
 return T_INT;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 36 "src/main.lex"
+#line 35 "src/main.lex"
 return T_CHAR;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 37 "src/main.lex"
+#line 36 "src/main.lex"
 return T_VOID;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 38 "src/main.lex"
+#line 37 "src/main.lex"
 return T_BOOL;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 40 "src/main.lex"
+#line 39 "src/main.lex"
 return S_FOR;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 41 "src/main.lex"
+#line 40 "src/main.lex"
 return S_IF;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 42 "src/main.lex"
+#line 41 "src/main.lex"
 return S_WHILE;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 43 "src/main.lex"
+#line 42 "src/main.lex"
 return S_ELSE;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 44 "src/main.lex"
+#line 43 "src/main.lex"
 return S_RETURN;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 46 "src/main.lex"
+#line 45 "src/main.lex"
 return P_PRINTF;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 47 "src/main.lex"
+#line 46 "src/main.lex"
 return P_SCANF;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 49 "src/main.lex"
+#line 48 "src/main.lex"
 return LOP_ASSIGN;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 50 "src/main.lex"
+#line 49 "src/main.lex"
 return LOP_PLUS;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 51 "src/main.lex"
+#line 50 "src/main.lex"
 return LOP_MINUS;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 52 "src/main.lex"
+#line 51 "src/main.lex"
 return LOP_MUL;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 53 "src/main.lex"
+#line 52 "src/main.lex"
 return LOP_DIV;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 54 "src/main.lex"
+#line 53 "src/main.lex"
 return LOP_MOD;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 55 "src/main.lex"
+#line 54 "src/main.lex"
 return LOP_INC;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 56 "src/main.lex"
+#line 55 "src/main.lex"
 return LOP_DEC;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 57 "src/main.lex"
+#line 56 "src/main.lex"
 return LOP_PLUS_ASSIGN;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 58 "src/main.lex"
+#line 57 "src/main.lex"
 return LOP_MINUS_ASSIGN;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 59 "src/main.lex"
+#line 58 "src/main.lex"
 return LOP_AND;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 60 "src/main.lex"
+#line 59 "src/main.lex"
 return LOP_OR;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 61 "src/main.lex"
+#line 60 "src/main.lex"
 return LOP_OPPSITE;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 62 "src/main.lex"
+#line 61 "src/main.lex"
 return LOP_LE;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 63 "src/main.lex"
+#line 62 "src/main.lex"
 return LOP_GE;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 64 "src/main.lex"
+#line 63 "src/main.lex"
 return LOP_NZ;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 65 "src/main.lex"
+#line 64 "src/main.lex"
 return LOP_GT;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 66 "src/main.lex"
+#line 65 "src/main.lex"
 return LOP_LT;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 67 "src/main.lex"
+#line 66 "src/main.lex"
 return LOP_EQ;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 69 "src/main.lex"
+#line 68 "src/main.lex"
 return COMMA;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 70 "src/main.lex"
+#line 69 "src/main.lex"
 return SEMICOLON;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 71 "src/main.lex"
+#line 70 "src/main.lex"
 return LPAREN;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 72 "src/main.lex"
+#line 71 "src/main.lex"
 return RPAREN;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 73 "src/main.lex"
+#line 72 "src/main.lex"
 return QUOTE;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 75 "src/main.lex"
+#line 74 "src/main.lex"
 {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Integer);
@@ -1000,7 +1000,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 85 "src/main.lex"
+#line 84 "src/main.lex"
 {
     NodeAttr attr=NodeAttr(yytext[1]);
     Node* node = new Node(lineno, NODE_CONST,-1,attr,Char);
@@ -1012,13 +1012,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 94 "src/main.lex"
+#line 93 "src/main.lex"
 {
     string str=string(yytext);
     str.erase(str.begin());
     str.erase(str.end()-1);
     NodeAttr attr=NodeAttr(str);
-    cout<<"string："<<str<<endl;
     Node* node = new Node(lineno,NODE_CONST,-1,attr,String);
     node->seq=parse_tree.node_seq++;
     parse_tree.type_check(node);
@@ -1028,7 +1027,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 107 "src/main.lex"
+#line 105 "src/main.lex"
 {
     NodeAttr attr=NodeAttr();
     Node* node = new Node(lineno, NODE_VAR,VAR_COMMON,attr,Notype);
@@ -1051,6 +1050,10 @@ YY_RULE_SETUP
             }
             node->number=tempNode->number;
             node->type=tempNode->type;//类型也相同
+            node->global_val=tempNode->global_val;//全局flag也相同
+            if(node->global_val==1){
+                cout<<"又发现一个全局变量："<<node->attr.var_name<<endl;
+            }
             break;
         }
     }
@@ -1066,7 +1069,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 142 "src/main.lex"
+#line 144 "src/main.lex"
 {
     scope++;
     return LBRACE;
@@ -1074,7 +1077,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 147 "src/main.lex"
+#line 149 "src/main.lex"
 {
     scope--;
     //遍历栈，删除firstScope>scope的结点
@@ -1098,28 +1101,28 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 168 "src/main.lex"
+#line 170 "src/main.lex"
 /* do nothing */
 	YY_BREAK
 case 45:
 /* rule 45 can match eol */
 YY_RULE_SETUP
-#line 170 "src/main.lex"
+#line 172 "src/main.lex"
 lineno++;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 172 "src/main.lex"
+#line 174 "src/main.lex"
 {
     cerr << "[line "<< lineno <<" ] unknown character:" << yytext << endl;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 175 "src/main.lex"
+#line 177 "src/main.lex"
 ECHO;
 	YY_BREAK
-#line 1123 "src/main.lex.yy.cpp"
+#line 1126 "src/main.lex.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2087,5 +2090,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 175 "src/main.lex"
+#line 177 "src/main.lex"
 
