@@ -911,23 +911,87 @@ void tree::gen_code(ostream &out,Node* p)
 					out<<"\tmovl\t%eax,%ebx"<<endl;
 					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
 					out<<"\tcmpl\t%ebx,%eax"<<endl;
-					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					out << "\tsetg\t%al" << endl;
+					if (p->label.true_label != "") {
+						out << "\tjle\t\t" << p->label.true_label << endl
+						out << "\tjmp\t\t" << p->label.false_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//>=
 				case OP_GE:
+				gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\tcmpl\t%ebx,%eax"<<endl;
+					out << "\tsetg\t%al" << endl;
+					if (p->label.true_label != "") {
+						out << "\tjge\t\t" << p->label.true_label << endl
+						out << "\tjmp\t\t" << p->label.false_label << endl;
+					}
+					gen_code(out,p->sibling);
 					break;
 				//!=
 				case OP_NZ:
+				gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\tcmpl\t%ebx,%eax"<<endl;
+					out << "\tsetg\t%al" << endl;
+					if (p->label.true_label != "") {
+						out << "\tjne\t\t" << p->label.true_label << endl
+						out << "\tjmp\t\t" << p->label.false_label << endl;
+					}
+					gen_code(out,p->sibling);
 					break;
 				//>
 				case OP_GT:
+				gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\tcmpl\t%ebx,%eax"<<endl;
+					out << "\tsetg\t%al" << endl;
+					if (p->label.true_label != "") {
+						out << "\tjg\t\t" << p->label.true_label << endl
+						out << "\tjmp\t\t" << p->label.false_label << endl;
+					}
+					gen_code(out,p->sibling);
 					break;
 				//<
 				case OP_LT:
+				gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\tcmpl\t%ebx,%eax"<<endl;
+					out << "\tsetg\t%al" << endl;
+					if (p->label.true_label != "") {
+						out << "\tjl\t\t" << p->label.true_label << endl
+						out << "\tjmp\t\t" << p->label.false_label << endl;
+					}
+					gen_code(out,p->sibling);
 					break;
 				//==
 				case OP_EQ:
+				gen_code(out,p->children);
+					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
+					out<<"\tmovl\t%eax,%ebx"<<endl;
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
+					out<<"\tcmpl\t%ebx,%eax"<<endl;
+					out << "\tsetg\t%al" << endl;
+					if (p->label.true_label != "") {
+						out << "\tje\t\t" << p->label.true_label << endl
+						out << "\tjmp\t\t" << p->label.false_label << endl;
+					}
+					gen_code(out,p->sibling);
 					break;
 				default:
 					break;
@@ -936,6 +1000,28 @@ void tree::gen_code(ostream &out,Node* p)
 		case NODE_TYPE:
 			break;
 		case NODE_STMT:
+			switch(p->kind_kind){
+				case STMT_SKIP:
+					break;
+				case STMT_DECL:
+					break;
+				case STMT_FOR:
+					break;
+				case STMT_WHILE:
+					break;
+				case STMT_IF_ELSE:
+					break;
+				case STMT_IF:
+					break;
+				case STMT_PRINTF:
+					break;
+				case STMT_SCANF:
+					break;
+				case STMT_RETURN:
+					break;
+				default:
+					break;
+			}
 			break;
 		case NODE_FUNC:
 			cout<<endl;
