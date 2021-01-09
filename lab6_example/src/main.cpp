@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
     yyin = fopen(argv[1], "r");
     ostream* asm_out = new ofstream("out.s");
     yyparse();
-    parse_tree.get_label();
     parse_tree.gen_code(*asm_out,parse_tree.root);
     return 0;
 }

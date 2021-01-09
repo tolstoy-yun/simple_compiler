@@ -125,6 +125,7 @@ public:
     int number=-1; //当node类型为变量时，其被分配的序号
 	int suspected_redefine=0;//疑似重定义符号标志位，为1时代表这个符号疑似重定义了
 	int global_val=0;//全局变量标志位，1为全局变量
+	int str_seq=-1;//string的序号
 	void output(void);
 
 	Node(int lineno,NodeType kind, int kind_kind, NodeAttr attr, int type);
@@ -145,22 +146,15 @@ public:
 	void type_check(Node *t);
 	void get_temp_var(Node *t);
 	string new_label(void);
-	void recursive_get_label(Node *t);
-	void stmt_get_label(Node *t);
-	void expr_get_label(Node *t);
-	void func_get_label(Node *t);
 	void gen_header(ostream &out);
 	void gen_decl(ostream &out, Node *t);
 	void gen_str(ostream &out, Node *t);
-	void recursive_gen_code(ostream &out, Node *t);
-	void stmt_gen_code(ostream &out, Node *t);
-	void expr_gen_code(ostream &out, Node *t);
 	
 public:
 	Node* NewRoot(int lineno,NodeType kind, int kind_kind, NodeAttr attr, int type,
 		Node *child = NULL);
-	void get_label(void);
 	void gen_code(ostream &out,Node* p);
 	string get_var(Node* p);
+	void get_label(Node* p);
 };
 #endif

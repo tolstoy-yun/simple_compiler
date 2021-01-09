@@ -1830,8 +1830,8 @@ yyreduce:
     node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-6]);
     node->addChild(yyvsp[-4]);
-    node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
+    node->addChild(yyvsp[-2]);
     parse_tree.type_check(yyvsp[-6]);
     parse_tree.type_check(yyvsp[-4]);
     parse_tree.type_check(yyvsp[-2]);

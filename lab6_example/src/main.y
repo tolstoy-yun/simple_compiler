@@ -254,8 +254,8 @@ for_stmt: S_FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statement {
     node->seq=parse_tree.node_seq++;
     node->addChild($3);
     node->addChild($5);
-    node->addChild($7);
     node->addChild($9);
+    node->addChild($7);
     parse_tree.type_check($3);
     parse_tree.type_check($5);
     parse_tree.type_check($7);

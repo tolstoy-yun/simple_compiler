@@ -65,13 +65,11 @@
 //02_var_out.c
 int a;
 int b;
-bool c;
-bool d;
 int main(){
-    c=c&&d;
-    a = 9;
-    b = 0;
-    a=a+b;
+    a=3;
+    for(b=0;b<6;b++){
+        a++;
+    }
     printf("test:%d\n",a);
     return 0;
 }
