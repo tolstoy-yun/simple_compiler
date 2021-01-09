@@ -66,10 +66,8 @@
 int a;
 int b;
 int main(){
-    a=3;
-    for(b=0;b<6;b++){
-        a++;
-    }
+    b=2;
+    a=-b;
     printf("test:%d\n",a);
     return 0;
 }

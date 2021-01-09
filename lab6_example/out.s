@@ -7,6 +7,9 @@ a:
 	.align	4
 b:
 	.zero	4
+	.align	4
+t0:
+	.zero	4
 
 	.section	.rodata
 STR0:
@@ -16,36 +19,18 @@ STR0:
 	.globl	main
 	.type	main, @function
 main:
-	movl	$3, %eax
-	movl	%eax, a
-	movl	$0, %eax
+	movl	$2, %eax
 	movl	%eax, b
-.L0:
 	movl	b, %eax
-	movl	%eax,%ebx
-	movl	$6, %eax
-	cmpl	%ebx,%eax
-	setg	%al
-	jl		.L1
-	jmp		.L2
-.L1:
-	movl	a, %eax
-	movl	%eax,%ebx
-	movl	$1, %eax
-	addl	%ebx,%eax
+	negl	%eax
+	movl	%eax,t0
+	movl	t0, %eax
 	movl	%eax, a
-.L3:
-	movl	b, %eax
-	movl	%eax,%ebx
-	movl	$1, %eax
-	addl	%ebx,%eax
-	movl	%eax, b
-	jmp		.L0
-.L2:
 	movl	a,%ebx
 	pushl	%ebx
 	pushl	$STR0
 	call	printf
 	addl	$8,%esp
+	movl	$0,%eax
 	ret
 .section	.note.GNU−stack,"",@progbits

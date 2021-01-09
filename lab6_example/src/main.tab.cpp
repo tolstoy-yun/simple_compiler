@@ -559,8 +559,8 @@ static const yytype_int16 yyrline[] =
      217,   224,   231,   238,   247,   248,   251,   265,   280,   292,
      302,   315,   323,   334,   345,   346,   347,   348,   352,   355,
      358,   361,   364,   373,   382,   391,   400,   409,   418,   427,
-     436,   444,   452,   461,   470,   478,   487,   496,   505,   514,
-     523,   532,   533,   541
+     436,   444,   452,   461,   470,   481,   490,   499,   508,   517,
+     526,   535,   536,   544
 };
 #endif
 
@@ -1619,7 +1619,7 @@ yyreduce:
 #line 83 "src/main.y"
                          {
     NodeAttr attr=NodeAttr();
-    Node* node = new Node(yyvsp[-1]->lineno, NODE_STMT,STMT_RETURN,attr,yyvsp[-1]->type);
+    Node* node = new Node(yyvsp[-2]->lineno, NODE_STMT,STMT_RETURN,attr,yyvsp[-1]->type);
     node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-1]);
     parse_tree.type_check(node);
@@ -1722,7 +1722,7 @@ yyreduce:
 #line 181 "src/main.y"
                                          {
     NodeAttr attr=NodeAttr();
-    Node* node=new Node(yyvsp[-3]->lineno,NODE_FUNC,-1,attr,yyvsp[-4]->type);
+    Node* node=new Node(yyvsp[-4]->lineno,NODE_FUNC,-1,attr,yyvsp[-4]->type);
     node->seq=parse_tree.node_seq++;
     if(yyvsp[-3]->suspected_redefine==1){
         cerr << "[line " <<yyvsp[-3]->lineno<<"]："<<yyvsp[-3]->attr.var_name <<" has been declared before."<< endl;
@@ -1878,7 +1878,7 @@ yyreduce:
 #line 292 "src/main.y"
                                                                 {
     NodeAttr attr=NodeAttr();
-    Node* node=new Node(yyvsp[-2]->lineno,NODE_STMT,STMT_IF,attr,Notype);
+    Node* node=new Node(yyvsp[-4]->lineno,NODE_STMT,STMT_IF,attr,Notype);
     node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-2]);
     node->addChild(yyvsp[0]);
@@ -1893,7 +1893,7 @@ yyreduce:
 #line 302 "src/main.y"
                                                     {
     NodeAttr attr=NodeAttr();
-    Node* node=new Node(yyvsp[-4]->lineno,NODE_STMT,STMT_IF_ELSE,attr,Notype);
+    Node* node=new Node(yyvsp[-6]->lineno,NODE_STMT,STMT_IF_ELSE,attr,Notype);
     node->seq=parse_tree.node_seq++;
     node->addChild(yyvsp[-4]);
     node->addChild(yyvsp[-2]);
@@ -2171,6 +2171,9 @@ yyreduce:
   case 54:
 #line 470 "src/main.y"
                   {
+    cout<<"建成取反节点"<<endl;
+    cout<<"行号为："<<yyvsp[0]->lineno<<endl;
+    cout<<"孩子类型为："<<yyvsp[0]->kind<<endl;
     NodeAttr attr=NodeAttr(OP_OPPSITE);
     Node* node=new Node(yyvsp[0]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
     node->seq=parse_tree.node_seq++;
@@ -2178,11 +2181,11 @@ yyreduce:
     parse_tree.get_temp_var(node);
     yyval=node;
 }
-#line 2182 "src/main.tab.cpp"
+#line 2185 "src/main.tab.cpp"
     break;
 
   case 55:
-#line 478 "src/main.y"
+#line 481 "src/main.y"
                   {
     NodeAttr attr=NodeAttr(OP_LE);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
@@ -2192,11 +2195,11 @@ yyreduce:
     parse_tree.get_temp_var(node);
     yyval=node;
 }
-#line 2196 "src/main.tab.cpp"
+#line 2199 "src/main.tab.cpp"
     break;
 
   case 56:
-#line 487 "src/main.y"
+#line 490 "src/main.y"
                   {
     NodeAttr attr=NodeAttr(OP_GE);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
@@ -2206,11 +2209,11 @@ yyreduce:
     parse_tree.get_temp_var(node);
     yyval=node;
 }
-#line 2210 "src/main.tab.cpp"
+#line 2213 "src/main.tab.cpp"
     break;
 
   case 57:
-#line 496 "src/main.y"
+#line 499 "src/main.y"
                   {
     NodeAttr attr=NodeAttr(OP_NZ);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
@@ -2220,11 +2223,11 @@ yyreduce:
     parse_tree.get_temp_var(node);
     yyval=node;
 }
-#line 2224 "src/main.tab.cpp"
+#line 2227 "src/main.tab.cpp"
     break;
 
   case 58:
-#line 505 "src/main.y"
+#line 508 "src/main.y"
                   {
     NodeAttr attr=NodeAttr(OP_GT);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
@@ -2234,11 +2237,11 @@ yyreduce:
     parse_tree.get_temp_var(node);
     yyval=node;
 }
-#line 2238 "src/main.tab.cpp"
+#line 2241 "src/main.tab.cpp"
     break;
 
   case 59:
-#line 514 "src/main.y"
+#line 517 "src/main.y"
                   {
     NodeAttr attr=NodeAttr(OP_LT);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
@@ -2248,11 +2251,11 @@ yyreduce:
     parse_tree.get_temp_var(node);
     yyval=node;
 }
-#line 2252 "src/main.tab.cpp"
+#line 2255 "src/main.tab.cpp"
     break;
 
   case 60:
-#line 523 "src/main.y"
+#line 526 "src/main.y"
                   {
     NodeAttr attr=NodeAttr(OP_EQ);
     Node* node=new Node(yyvsp[-2]->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
@@ -2262,17 +2265,17 @@ yyreduce:
     parse_tree.get_temp_var(node);
     yyval=node;
 }
-#line 2266 "src/main.tab.cpp"
+#line 2269 "src/main.tab.cpp"
     break;
 
   case 61:
-#line 532 "src/main.y"
-                    {yyval=yyvsp[-2];}
-#line 2272 "src/main.tab.cpp"
+#line 535 "src/main.y"
+                    {yyval=yyvsp[-1];}
+#line 2275 "src/main.tab.cpp"
     break;
 
   case 62:
-#line 533 "src/main.y"
+#line 536 "src/main.y"
                 {
     NodeAttr attr=NodeAttr(OP_MINUS);
     Node* node=new Node(yyvsp[0]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[0]->type);
@@ -2281,11 +2284,11 @@ yyreduce:
     parse_tree.get_temp_var(node);
     yyval=node;
 }
-#line 2285 "src/main.tab.cpp"
+#line 2288 "src/main.tab.cpp"
     break;
 
   case 63:
-#line 541 "src/main.y"
+#line 544 "src/main.y"
                {
     NodeAttr attr=NodeAttr(OP_PLUS);
     Node* node=new Node(yyvsp[0]->lineno,NODE_EXPR,EXPR_OP,attr,yyvsp[0]->type);
@@ -2294,11 +2297,11 @@ yyreduce:
     parse_tree.get_temp_var(node);
     yyval=node;
 }
-#line 2298 "src/main.tab.cpp"
+#line 2301 "src/main.tab.cpp"
     break;
 
 
-#line 2302 "src/main.tab.cpp"
+#line 2305 "src/main.tab.cpp"
 
       default: break;
     }
@@ -2530,7 +2533,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 551 "src/main.y"
+#line 554 "src/main.y"
 
 
 int yyerror(char const* message)

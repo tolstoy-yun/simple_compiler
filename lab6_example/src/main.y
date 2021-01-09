@@ -82,7 +82,7 @@ statement
 return_stmt
 : S_RETURN expr SEMICOLON{
     NodeAttr attr=NodeAttr();
-    Node* node = new Node($2->lineno, NODE_STMT,STMT_RETURN,attr,$2->type);
+    Node* node = new Node($1->lineno, NODE_STMT,STMT_RETURN,attr,$2->type);
     node->seq=parse_tree.node_seq++;
     node->addChild($2);
     parse_tree.type_check(node);
@@ -180,7 +180,7 @@ declaration
 
 func:T IDENTIFIER LPAREN RPAREN statement{
     NodeAttr attr=NodeAttr();
-    Node* node=new Node($2->lineno,NODE_FUNC,-1,attr,$1->type);
+    Node* node=new Node($1->lineno,NODE_FUNC,-1,attr,$1->type);
     node->seq=parse_tree.node_seq++;
     if($2->suspected_redefine==1){
         cerr << "[line " <<$2->lineno<<"]："<<$2->attr.var_name <<" has been declared before."<< endl;
@@ -291,7 +291,7 @@ while_stmt: S_WHILE LPAREN expr RPAREN statement {
 
 if_stmt: S_IF LPAREN expr RPAREN statement %prec LOWER_THAN_ELSE{
     NodeAttr attr=NodeAttr();
-    Node* node=new Node($3->lineno,NODE_STMT,STMT_IF,attr,Notype);
+    Node* node=new Node($1->lineno,NODE_STMT,STMT_IF,attr,Notype);
     node->seq=parse_tree.node_seq++;
     node->addChild($3);
     node->addChild($5);
@@ -301,7 +301,7 @@ if_stmt: S_IF LPAREN expr RPAREN statement %prec LOWER_THAN_ELSE{
 }
 | S_IF LPAREN expr RPAREN statement S_ELSE statement{
     NodeAttr attr=NodeAttr();
-    Node* node=new Node($3->lineno,NODE_STMT,STMT_IF_ELSE,attr,Notype);
+    Node* node=new Node($1->lineno,NODE_STMT,STMT_IF_ELSE,attr,Notype);
     node->seq=parse_tree.node_seq++;
     node->addChild($3);
     node->addChild($5);
@@ -468,6 +468,9 @@ expr
     $$=node;
 }
 | LOP_OPPSITE expr{
+    cout<<"建成取反节点"<<endl;
+    cout<<"行号为："<<$2->lineno<<endl;
+    cout<<"孩子类型为："<<$2->kind<<endl;
     NodeAttr attr=NodeAttr(OP_OPPSITE);
     Node* node=new Node($2->lineno,NODE_EXPR,EXPR_OP,attr,Boolean);
     node->seq=parse_tree.node_seq++;
@@ -529,7 +532,7 @@ expr
     parse_tree.get_temp_var(node);
     $$=node;
 }
-| LPAREN expr RPAREN{$$=$1;}
+| LPAREN expr RPAREN{$$=$2;}
 | LOP_MINUS expr{
     NodeAttr attr=NodeAttr(OP_MINUS);
     Node* node=new Node($2->lineno,NODE_EXPR,EXPR_OP,attr,$2->type);
