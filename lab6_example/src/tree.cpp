@@ -460,6 +460,7 @@ void tree::get_label(Node* p) {
 				p->label.next_label = new_label();
 				p->children->sibling->label.begin_label=p->children->label.true_label = p->label.true_label;
 				p->children->sibling->sibling->label.begin_label=p->children->label.false_label = p->label.false_label;
+				p->children->sibling->label.next_label=p->label.next_label;
 				break;
 			case STMT_WHILE:
 				p->label.begin_label = p->label.next_label = new_label();
@@ -612,20 +613,28 @@ void tree::gen_code(ostream &out,Node* p)
 					if (p->label.begin_label != "")
 						out << p->label.begin_label << ":" << endl;
 					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
 					out << "\tmovl\t" << get_var(p->children) << ", %ebx" << endl;
                  	out << "\taddl\t%ebx, %eax" << endl;
                  	out << "\tmovl\t%eax, " << get_var(p->children) << endl;
-					gen_code(out,p->sibling);
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
+					gen_code(out,p->sibling); 
 					break;
 				//-=
 				case OP_MINUS_ASSIGN:
 					if (p->label.begin_label != "")
 						out << p->label.begin_label << ":" << endl;
 					gen_code(out,p->children->sibling);
+					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
 					out << "\tmovl\t" << get_var(p->children) << ", %ebx" << endl;
                  	out << "\tsubl\t%eax, %ebx" << endl;
                  	out << "\tmovl\t%ebx, %eax" << endl;
-                 	out << "\tmovl\t%eax, " << get_var(p->children) << endl;
+                 	out << "\tmovl\t%eax, " << get_var(p->children) << endl; 
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//=
@@ -635,6 +644,9 @@ void tree::gen_code(ostream &out,Node* p)
 					gen_code(out,p->children->sibling);
 					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
 					out << "\tmovl\t%eax, " << get_var(p->children) << endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//+
@@ -645,6 +657,9 @@ void tree::gen_code(ostream &out,Node* p)
 					if(p->children->sibling==nullptr){
 						out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
 						out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+						if(p->label.next_label!=""){
+							out << "\tjmp\t\t" << p->label.next_label << endl;
+						}
 						gen_code(out,p->sibling);
 						break;
 					}
@@ -655,6 +670,9 @@ void tree::gen_code(ostream &out,Node* p)
 					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
 					out<<"\taddl\t%ebx,%eax"<<endl;
 					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//-
@@ -666,6 +684,9 @@ void tree::gen_code(ostream &out,Node* p)
 						out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
 						out << "\tnegl\t%eax"<<endl;
 						out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+						if(p->label.next_label!=""){
+							out << "\tjmp\t\t" << p->label.next_label << endl;
+						}
 						gen_code(out,p->sibling);
 						break;
 					}
@@ -677,7 +698,11 @@ void tree::gen_code(ostream &out,Node* p)
 					out<<"\tsubl\t%eax,%ebx"<<endl;
 					out << "\tmovl\t%ebx, %eax" << endl;
 					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
+					break;
 				//*
 				case OP_MUL:
 					if (p->label.begin_label != "")
@@ -689,6 +714,9 @@ void tree::gen_code(ostream &out,Node* p)
 					out << "\tmovl\t" << get_var(p->children->sibling) << ", %eax" << endl;
 					out<<"\timull\t%ebx,%eax"<<endl;
 					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				// /
@@ -699,8 +727,12 @@ void tree::gen_code(ostream &out,Node* p)
 					gen_code(out,p->children->sibling);
 					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
 					out << "\tmovl\t" << get_var(p->children->sibling) << ", %ebx" << endl;
+					out << "\tcltd" << endl;
 					out<<"\tidivl\t%ebx"<<endl;
 					out<<"\tmovl\t%eax,"<<get_var(p)<<endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				// %
@@ -711,8 +743,12 @@ void tree::gen_code(ostream &out,Node* p)
 					gen_code(out,p->children->sibling);
 					out << "\tmovl\t" << get_var(p->children) << ", %eax" << endl;
 					out << "\tmovl\t" << get_var(p->children->sibling) << ", %ebx" << endl;
+					out << "\tcltd" << endl;
 					out<<"\tidivl\t%ebx"<<endl;
 					out<<"\tmovl\t%edx,"<<get_var(p)<<endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//++
@@ -725,6 +761,9 @@ void tree::gen_code(ostream &out,Node* p)
 					out << "\tmovl\t$1" << ", %eax" << endl;
 					out<<"\taddl\t%ebx,%eax"<<endl;
 					out << "\tmovl\t%eax, " << get_var(p->children) << endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//--
@@ -738,6 +777,9 @@ void tree::gen_code(ostream &out,Node* p)
 					out<<"\tsubl\t%eax,%ebx"<<endl;
 					out << "\tmovl\t%ebx, %eax" << endl;
 					out << "\tmovl\t%eax, " << get_var(p->children) << endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//&&
@@ -746,6 +788,9 @@ void tree::gen_code(ostream &out,Node* p)
 					if (p->label.begin_label != "")
 						out << p->label.begin_label << ":" << endl;
 					gen_code(out,p->children);
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//||
@@ -754,6 +799,9 @@ void tree::gen_code(ostream &out,Node* p)
 					if (p->label.begin_label != "")
 						out << p->label.begin_label << ":" << endl;
 					gen_code(out,p->children);
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//!
@@ -762,6 +810,9 @@ void tree::gen_code(ostream &out,Node* p)
 					if (p->label.begin_label != "")
 						out << p->label.begin_label << ":" << endl;
 					gen_code(out,p->children);
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//<=
@@ -778,6 +829,9 @@ void tree::gen_code(ostream &out,Node* p)
 					if (p->label.true_label != "") {
 						out << "\tjle\t\t" << p->label.true_label << endl;
 						out << "\tjmp\t\t" << p->label.false_label << endl;
+					}
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
 					}
 					gen_code(out,p->sibling);
 					break;
@@ -796,6 +850,9 @@ void tree::gen_code(ostream &out,Node* p)
 						out << "\tjge\t\t" << p->label.true_label << endl;
 						out << "\tjmp\t\t" << p->label.false_label << endl;
 					}
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//!=
@@ -812,6 +869,9 @@ void tree::gen_code(ostream &out,Node* p)
 					if (p->label.true_label != "") {
 						out << "\tjne\t\t" << p->label.true_label << endl;
 						out << "\tjmp\t\t" << p->label.false_label << endl;
+					}
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
 					}
 					gen_code(out,p->sibling);
 					break;
@@ -830,6 +890,9 @@ void tree::gen_code(ostream &out,Node* p)
 						out << "\tjg\t\t" << p->label.true_label << endl;
 						out << "\tjmp\t\t" << p->label.false_label << endl;
 					}
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				//<
@@ -846,6 +909,9 @@ void tree::gen_code(ostream &out,Node* p)
 					if (p->label.true_label != "") {
 						out << "\tjl\t\t" << p->label.true_label << endl;
 						out << "\tjmp\t\t" << p->label.false_label << endl;
+					}
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
 					}
 					gen_code(out,p->sibling);
 					break;
@@ -864,6 +930,9 @@ void tree::gen_code(ostream &out,Node* p)
 						out << "\tje\t\t" << p->label.true_label << endl;
 						out << "\tjmp\t\t" << p->label.false_label << endl;
 					}
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				default:
@@ -875,14 +944,23 @@ void tree::gen_code(ostream &out,Node* p)
 		case NODE_STMT:
 			switch(p->kind_kind){
 				case STMT_SKIP:
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				case STMT_DECL:
 					if(p->children->sibling->kind==NODE_VAR){
+						if(p->label.next_label!=""){
+							out << "\tjmp\t\t" << p->label.next_label << endl;
+						}
 						gen_code(out,p->sibling);
 						break;
 					}
 					else if(p->children->sibling->kind==NODE_EXPR){
+						if(p->label.next_label!=""){
+							out << "\tjmp\t\t" << p->label.next_label << endl;
+						}
 						gen_code(out,p->children->sibling);
 					}
 					gen_code(out,p->sibling);
@@ -922,11 +1000,24 @@ void tree::gen_code(ostream &out,Node* p)
 				case STMT_PRINTF:
 					if (p->label.begin_label != "")
 						out << p->label.begin_label << ":" << endl;
+					if(p->children->sibling==nullptr){
+						out<<"\tpushl\t$STR"<<p->children->str_seq<<endl;
+						out<<"\tcall\tprintf"<<endl;
+						out<<"\taddl\t$4,%esp"<<endl;
+						if(p->label.next_label!=""){
+							out << "\tjmp\t\t" << p->label.next_label << endl;
+						}
+						gen_code(out,p->sibling);
+						break;
+					}
 					out<<"\tmovl\t"<<get_var(p->children->sibling)<<",%ebx"<<endl;
 					out<<"\tpushl\t%ebx"<<endl;
 					out<<"\tpushl\t$STR"<<p->children->str_seq<<endl;
 					out<<"\tcall\tprintf"<<endl;
 					out<<"\taddl\t$8,%esp"<<endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				case STMT_SCANF:
@@ -936,6 +1027,9 @@ void tree::gen_code(ostream &out,Node* p)
 					out<<"\tpushl\t$STR"<<p->children->str_seq<<endl;
 					out<<"\tcall\tscanf"<<endl;
 					out<<"\taddl\t$8,%esp"<<endl;
+					if(p->label.next_label!=""){
+						out << "\tjmp\t\t" << p->label.next_label << endl;
+					}
 					gen_code(out,p->sibling);
 					break;
 				case STMT_RETURN:
